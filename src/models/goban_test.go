@@ -42,10 +42,11 @@ func TestPlaceWhite(t *testing.T) {
 	goban := NewGoban7()
 
 	err := goban.PlaceWhite('D', 4)
-	if err != nil {
-		t.Errorf("expected no error, got %v", err)
+	if err == nil {
+		t.Errorf("expected error, got nil")
 	}
 
+	err = goban.PlaceBlack('D', 4)
 	err = goban.PlaceWhite('D', 4)
 	if err == nil {
 		t.Errorf("expected error, got nil")

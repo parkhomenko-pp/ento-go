@@ -115,7 +115,7 @@ func (g *Goban) place(j, i uint8, color uint8) {
 }
 
 func (g *Goban) checkPoint(j, i, c uint8) error {
-	if g.lastStoneColor == empty && !g.isEmpty() {
+	if g.lastStoneColor == empty && c == white {
 		return errors.New("first move must be black")
 	}
 	if j < 0 || j >= uint8(len(g.dots)) || i < 0 || i >= uint8(len(g.dots)) {
