@@ -191,24 +191,6 @@ func (g *Goban) PlaceWhite(s rune, i uint8) error {
 	return nil
 }
 
-func (g *Goban) String() string {
-	var result string
-	for _, row := range g.dots {
-		for _, dot := range row {
-			switch dot {
-			case empty:
-				result += "·"
-			case black:
-				result += "⚫"
-			case white:
-				result += "⚪️"
-			}
-		}
-		result += "\n"
-	}
-	return result
-}
-
 func DrawCircle(img draw.Image, cx, cy, r int, col color.Color) {
 	for y := -r; y <= r; y++ {
 		for x := -r; x <= r; x++ {

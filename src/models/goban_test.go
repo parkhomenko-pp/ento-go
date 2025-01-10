@@ -26,6 +26,10 @@ func TestPlaceBlack(t *testing.T) {
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
+	err = goban.PlaceBlack('B', 1)
+	if err == nil {
+		t.Errorf("expected error, got nil")
+	}
 
 	err = goban.PlaceBlack('D', 4)
 	if err == nil {
@@ -62,6 +66,11 @@ func TestPlaceWhite(t *testing.T) {
 	if err == nil {
 		t.Errorf("expected error, got nil")
 	}
+	err = goban.PlaceWhite('E', 4)
+
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
 
 	err = goban.PlaceWhite('H', 8)
 	if err == nil {
@@ -74,6 +83,7 @@ func TestPlaceWhite(t *testing.T) {
 	}
 
 	err = goban.PlaceBlack('A', 1)
+
 	err = goban.PlaceWhite('Z', 8)
 	if err == nil {
 		t.Errorf("expected error, got nil")
@@ -174,5 +184,18 @@ func TestNewGoban19(t *testing.T) {
 		if len(row) != 19 {
 			t.Errorf("expected 19 columns, got %d", len(row))
 		}
+	}
+}
+
+func TestIsEmpty(t *testing.T) {
+	goban := NewGoban7()
+
+	if !goban.isEmpty() {
+		t.Errorf("expected empty, got not empty")
+	}
+
+	goban.PlaceBlack('A', 1)
+	if goban.isEmpty() {
+		t.Errorf("expected not empty, got empty")
 	}
 }
