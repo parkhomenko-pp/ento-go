@@ -385,7 +385,7 @@ func (g *Goban) findGroupAndLiberties(i, j, color uint8, visited [][]bool) ([][2
 
 		for _, neighbor := range neighbors {
 			nx, ny := neighbor[0], neighbor[1]
-			if nx >= 0 && nx < g.size && ny >= 0 && ny < g.size {
+			if nx < g.size && ny < g.size {
 				if g.dots[nx][ny] == empty {
 					hasLiberties = true
 				} else if g.dots[nx][ny] == color && !visited[nx][ny] {
