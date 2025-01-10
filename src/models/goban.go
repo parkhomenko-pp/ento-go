@@ -125,7 +125,7 @@ func (g *Goban) place(j, i uint8, color uint8) {
 }
 
 func (g *Goban) checkPoint(j, i, c uint8) error {
-	if g.lastStoneColor == empty && !g.isEmpty() {
+	if g.lastStoneColor == empty && c == white {
 		return errors.New("first move must be black")
 	}
 	if j < 0 || j >= uint8(len(g.dots)) || i < 0 || i >= uint8(len(g.dots)) {
@@ -134,8 +134,8 @@ func (g *Goban) checkPoint(j, i, c uint8) error {
 	if g.dots[i][j] != empty {
 		return errors.New("already placed")
 	}
-	if g.lastStoneColor == c {
-		return errors.New("cannot place two black")
+	if g.lastStoneColor == uint8(c) {
+		return errors.New("cannot place same color twice")
 	}
 
 	// TODO: check is point have 1 or more breath
@@ -202,24 +202,6 @@ func (g *Goban) PlaceWhite(s rune, i uint8) error {
 	}
 	g.place(i, j, white)
 	return nil
-}
-
-func (g *Goban) String() string {
-	var result string
-	for _, row := range g.dots {
-		for _, dot := range row {
-			switch dot {
-			case empty:
-				result += "·"
-			case black:
-				result += "⚫"
-			case white:
-				result += "⚪️"
-			}
-		}
-		result += "\n"
-	}
-	return result
 }
 
 func DrawCircle(img draw.Image, cx, cy, r int, col color.Color) {

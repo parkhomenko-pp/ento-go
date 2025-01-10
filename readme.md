@@ -39,3 +39,6 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
     - [ ] Full game support
 - Bot
     - TODO
+
+## Credits
+- [JetBrains Mono typeface](https://www.jetbrains.com/lp/mono/)
