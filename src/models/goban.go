@@ -125,7 +125,7 @@ func (g *Goban) checkPoint(j, i, c uint8) error {
 		return errors.New("already placed")
 	}
 	if g.lastStoneColor == uint8(c) {
-		return errors.New("cannot place two black")
+		return errors.New("cannot place same color twice")
 	}
 
 	return nil

@@ -32,7 +32,18 @@ func TestPlaceBlack(t *testing.T) {
 		t.Errorf("expected error, got nil")
 	}
 
+	err = goban.PlaceWhite('D', 4)
 	err = goban.PlaceBlack('A', 8)
+	if err == nil {
+		t.Errorf("expected error, got nil")
+	}
+
+	err = goban.PlaceBlack('A', 8)
+	if err == nil {
+		t.Errorf("expected error, got nil")
+	}
+
+	err = goban.PlaceBlack('Z', 8)
 	if err == nil {
 		t.Errorf("expected error, got nil")
 	}
@@ -53,6 +64,17 @@ func TestPlaceWhite(t *testing.T) {
 	}
 
 	err = goban.PlaceWhite('H', 8)
+	if err == nil {
+		t.Errorf("expected error, got nil")
+	}
+
+	err = goban.PlaceWhite('H', 8)
+	if err == nil {
+		t.Errorf("expected error, got nil")
+	}
+
+	err = goban.PlaceBlack('A', 1)
+	err = goban.PlaceWhite('Z', 8)
 	if err == nil {
 		t.Errorf("expected error, got nil")
 	}
