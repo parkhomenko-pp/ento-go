@@ -194,7 +194,7 @@ func TestIsEmpty(t *testing.T) {
 		t.Errorf("expected empty, got not empty")
 	}
 
-	goban.PlaceBlack('A', 1)
+	_ = goban.PlaceBlack('A', 1)
 	if goban.isEmpty() {
 		t.Errorf("expected not empty, got empty")
 	}
