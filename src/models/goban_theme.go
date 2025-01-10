@@ -12,7 +12,7 @@ const (
 	woodLight = 2
 	woodDark  = 3
 
-	thLight = 4
+	tgLight = 4
 	tgDark  = 5
 )
 
@@ -40,7 +40,7 @@ func (t *GobanTheme) GetFilePathName() (string, error) {
 		return "wood-light", nil
 	case woodDark:
 		return "wood-dark", nil
-	case thLight:
+	case tgLight:
 		return "tg-light", nil
 	case tgDark:
 		return "tg-dark", nil
@@ -115,11 +115,11 @@ func NewWoodDarkGobanTheme() *GobanTheme {
 
 func NewTgLightGobanTheme() *GobanTheme {
 	return &GobanTheme{
-		id: thLight,
+		id: tgLight,
 
 		blackStoneFill:   color.RGBA{R: 0x43, G: 0x61, B: 0x79, A: 0xFF},
 		blackStoneStroke: color.RGBA{R: 0x43, G: 0x61, B: 0x79, A: 0xFF},
-		whiteStoneFill:   color.RGBA{R: 0xF4, G: 0xF4, B: 0xF4, A: 0xFF},
+		whiteStoneFill:   color.RGBA{R: 0xFF, G: 0xFF, B: 0xFF, A: 0xFF},
 		whiteStoneStroke: color.RGBA{R: 0x43, G: 0x61, B: 0x79, A: 0xFF},
 
 		lastBlackStoneFill:   color.RGBA{R: 0x43, G: 0x61, B: 0x79, A: 0xFF},

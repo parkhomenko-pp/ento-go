@@ -2,10 +2,12 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
 	"image/png"
+	"log"
 	"math"
 	"os"
 	"strconv"
@@ -13,15 +15,19 @@ import (
 )
 
 type Goban struct {
-	size uint8
-	komi float32
+	theme GobanTheme
+
+	size  uint8
+	komi  float32
+	count float32
 
 	dots           [][]uint8
 	lastStoneColor uint8
 	lastI          uint8
 	lastJ          uint8
 
-	theme GobanTheme
+	whiteCaptured uint16
+	blackCaptured uint16
 }
 
 const (
@@ -56,6 +62,7 @@ func NewGoban7() *Goban {
 func NewGoban9() *Goban {
 	return newGoban(9, 5.5)
 }
+
 func NewGoban11() *Goban {
 	return newGoban(11, 5.5)
 }
@@ -73,8 +80,9 @@ func (g *Goban) ChangeTheme(theme *GobanTheme) {
 }
 
 func (g *Goban) Print() {
-	print("  A B C D E F G H I J K L M N O P Q R S T"[0 : (g.size+1)*2])
-	println("\tCount: ")
+	horizontalMarks := "  A B C D E F G H I J K L M N O P Q R S T"[0 : (g.size+1)*2]
+	print(horizontalMarks)
+	fmt.Printf("\tCount: %0.1f\n", g.count)
 	for i, row := range g.dots {
 		print(g.size-uint8(i), " ")
 		for _, dot := range row {
@@ -91,20 +99,20 @@ func (g *Goban) Print() {
 
 		switch i {
 		case 0:
-			println("\tKomi:\t", strconv.FormatFloat(float64(g.komi), 'f', 1, 32))
+			println("\tKomi: ", strconv.FormatFloat(float64(g.komi), 'f', 1, 32))
 		case 2:
 			println("\tBlack territory: ", g.CountBlack())
 		case 3:
 			println("\tWhite territory: ", g.CountWhite())
 		case 5:
-			println("\tWhite captured: ", g.CountWhite())
+			println("\tWhite captured: ", g.whiteCaptured)
 		case 6:
-			println("\tBlack captured: ", g.CountWhite())
+			println("\tBlack captured: ", g.blackCaptured)
 		default:
 			println()
 		}
 	}
-	println("  A B C D E F G H I J K L M N O P Q R S T"[0 : (g.size+1)*2])
+	println(horizontalMarks)
 }
 
 func (g *Goban) place(j, i uint8, color uint8) {
@@ -112,6 +120,8 @@ func (g *Goban) place(j, i uint8, color uint8) {
 	g.lastI = j
 	g.lastJ = i
 	g.lastStoneColor = color
+
+	g.removeStonesWithoutBreathes()
 }
 
 func (g *Goban) checkPoint(j, i, c uint8) error {
@@ -127,6 +137,9 @@ func (g *Goban) checkPoint(j, i, c uint8) error {
 	if g.lastStoneColor == uint8(c) {
 		return errors.New("cannot place same color twice")
 	}
+
+	// TODO: check is point have 1 or more breath
+	// 		 exception: surrounded by other color
 
 	return nil
 }
@@ -207,7 +220,7 @@ func DrawCircle(img draw.Image, cx, cy, r int, col color.Color) {
 				newG := uint8((float64(g1)*(1-alpha) + float64(g2)*alpha) / 256)
 				newB := uint8((float64(b1)*(1-alpha) + float64(b2)*alpha) / 256)
 				newA := uint8((float64(a1)*(1-alpha) + float64(a2)*alpha) / 256)
-				img.Set(cx+x, cy+y, color.RGBA{newR, newG, newB, newA})
+				img.Set(cx+x, cy+y, color.RGBA{R: newR, G: newG, B: newB, A: newA})
 			}
 		}
 	}
@@ -223,7 +236,12 @@ func (g *Goban) loadBackground() (image.Image, error) {
 		println(err.Error())
 	}
 
-	defer sourceImageFile.Close()
+	defer func(sourceImageFile *os.File) {
+		err := sourceImageFile.Close()
+		if err != nil {
+			log.Fatal("cannot close goban background file")
+		}
+	}(sourceImageFile)
 
 	return png.Decode(sourceImageFile)
 }
@@ -306,6 +324,72 @@ func (g *Goban) GetImage() **image.RGBA {
 	}
 
 	return &drawableImage
+}
+
+func (g *Goban) removeStonesWithoutBreathes() {
+	visited := make([][]bool, g.size)
+	for i := range visited {
+		visited[i] = make([]bool, g.size)
+	}
+
+	for i := uint8(0); i < g.size; i++ {
+		for j := uint8(0); j < g.size; j++ {
+			if g.dots[i][j] != empty && !visited[i][j] {
+				group, hasLiberties := g.findGroupAndLiberties(i, j, g.dots[i][j], visited)
+				if !hasLiberties {
+					g.removeGroup(group)
+				}
+			}
+		}
+	}
+}
+
+func (g *Goban) findGroupAndLiberties(i, j, color uint8, visited [][]bool) ([][2]uint8, bool) {
+	var group [][2]uint8
+	var stack [][2]uint8
+	stack = append(stack, [2]uint8{i, j})
+	hasLiberties := false
+
+	for len(stack) > 0 {
+		point := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		x, y := point[0], point[1]
+
+		if visited[x][y] {
+			continue
+		}
+		visited[x][y] = true
+		group = append(group, [2]uint8{x, y})
+
+		neighbors := [][2]uint8{
+			{x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1},
+		}
+
+		for _, neighbor := range neighbors {
+			nx, ny := neighbor[0], neighbor[1]
+			if nx < g.size && ny < g.size {
+				if g.dots[nx][ny] == empty {
+					hasLiberties = true
+				} else if g.dots[nx][ny] == color && !visited[nx][ny] {
+					stack = append(stack, [2]uint8{nx, ny})
+				}
+			}
+		}
+	}
+
+	return group, hasLiberties
+}
+
+func (g *Goban) removeGroup(group [][2]uint8) {
+	for _, point := range group {
+		x, y := point[0], point[1]
+		if g.dots[x][y] == black {
+			g.blackCaptured++
+		} else if g.dots[x][y] == white {
+			g.whiteCaptured++
+		}
+		g.dots[x][y] = empty
+	}
 }
 
 func (g *Goban) countSurroundedPoints(color uint8) int {

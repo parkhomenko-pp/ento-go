@@ -2,7 +2,7 @@
 
 [![Go](https://github.com/parkhomenko-pp/go-telegram-bot/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/parkhomenko-pp/go-telegram-bot/actions/workflows/go.yml?query=branch:master)
 [![codecov](https://codecov.io/github/parkhomenko-pp/ento-go/graph/badge.svg?token=XRDZ7Q1XRC)](https://codecov.io/github/parkhomenko-pp/ento-go)
-[![codecov](./preview/tg-badge.svg)](https://t.me/ento_go_bot)
+[![Telegram Bot](./preview/tg-badge.svg)](https://t.me/ento_go_bot)
 
 <img src="preview/icon.png" align="right" width=150 height=150/>
 
