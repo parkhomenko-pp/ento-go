@@ -221,8 +221,8 @@ func TestRemoveStonesWithoutBreathes(t *testing.T) {
 			t.Errorf(
 				"%s: goban black captured is wrong. \nexpected: %d\nrecieved: %d\n",
 				testName,
-				test.ExpectedWhiteCaptured,
-				goban.whiteCaptured,
+				test.ExpectedBlackCaptured,
+				goban.blackCaptured,
 			)
 		}
 	}

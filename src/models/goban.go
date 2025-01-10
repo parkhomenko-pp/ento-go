@@ -345,7 +345,69 @@ func (g *Goban) GetImage() **image.RGBA {
 }
 
 func (g *Goban) removeStonesWithoutBreathes() {
+	visited := make([][]bool, g.size)
+	for i := range visited {
+		visited[i] = make([]bool, g.size)
+	}
 
+	for i := uint8(0); i < g.size; i++ {
+		for j := uint8(0); j < g.size; j++ {
+			if g.dots[i][j] != empty && !visited[i][j] {
+				group, hasLiberties := g.findGroupAndLiberties(i, j, g.dots[i][j], visited)
+				if !hasLiberties {
+					g.removeGroup(group)
+				}
+			}
+		}
+	}
+}
+
+func (g *Goban) findGroupAndLiberties(i, j, color uint8, visited [][]bool) ([][2]uint8, bool) {
+	var group [][2]uint8
+	var stack [][2]uint8
+	stack = append(stack, [2]uint8{i, j})
+	hasLiberties := false
+
+	for len(stack) > 0 {
+		point := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		x, y := point[0], point[1]
+
+		if visited[x][y] {
+			continue
+		}
+		visited[x][y] = true
+		group = append(group, [2]uint8{x, y})
+
+		neighbors := [][2]uint8{
+			{x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1},
+		}
+
+		for _, neighbor := range neighbors {
+			nx, ny := neighbor[0], neighbor[1]
+			if nx >= 0 && nx < g.size && ny >= 0 && ny < g.size {
+				if g.dots[nx][ny] == empty {
+					hasLiberties = true
+				} else if g.dots[nx][ny] == color && !visited[nx][ny] {
+					stack = append(stack, [2]uint8{nx, ny})
+				}
+			}
+		}
+	}
+
+	return group, hasLiberties
+}
+
+func (g *Goban) removeGroup(group [][2]uint8) {
+	for _, point := range group {
+		x, y := point[0], point[1]
+		if g.dots[x][y] == black {
+			g.blackCaptured++
+		} else if g.dots[x][y] == white {
+			g.whiteCaptured++
+		}
+		g.dots[x][y] = empty
+	}
 }
 
 func (g *Goban) countSurroundedPoints(color uint8) int {
