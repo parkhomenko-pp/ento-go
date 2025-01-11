@@ -121,7 +121,7 @@ func (g *Goban) place(j, i uint8, color uint8) {
 	g.lastJ = i
 	g.lastStoneColor = color
 
-	g.removeStonesWithoutBreathes()
+	g.removeStonesWithoutLiberties()
 }
 
 func (g *Goban) checkPoint(j, i, c uint8) error {
@@ -326,7 +326,7 @@ func (g *Goban) GetImage() **image.RGBA {
 	return &drawableImage
 }
 
-func (g *Goban) removeStonesWithoutBreathes() {
+func (g *Goban) removeStonesWithoutLiberties() {
 	visited := make([][]bool, g.size)
 	for i := range visited {
 		visited[i] = make([]bool, g.size)
@@ -392,7 +392,7 @@ func (g *Goban) removeGroup(group [][2]uint8) {
 	}
 }
 
-func (g *Goban) countSurroundedPoints(color uint8) int {
+func (g *Goban) countSurroundedPoints(_ uint8) int {
 	return 0
 }
 

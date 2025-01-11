@@ -215,8 +215,8 @@ func isDotsEqual(a, b [][]uint8) bool {
 	return true
 }
 
-func TestRemoveStonesWithoutBreathes(t *testing.T) {
-	jsonTestFile, err := os.ReadFile("./test_data/goban_test_remove_stones_without_breathes.json")
+func TestRemoveStonesWithoutLiberties(t *testing.T) {
+	jsonTestFile, err := os.ReadFile("./test_data/goban_test_remove_stones_without_liberties.json")
 	if err != nil {
 		panic(err)
 	}
@@ -242,7 +242,7 @@ func TestRemoveStonesWithoutBreathes(t *testing.T) {
 		goban.dots = test.Dots
 
 		// run logic
-		goban.removeStonesWithoutBreathes()
+		goban.removeStonesWithoutLiberties()
 
 		// check result
 		if !isDotsEqual(goban.dots, test.ExpectedDots) {
