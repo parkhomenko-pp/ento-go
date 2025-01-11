@@ -31,14 +31,14 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
     - [x] Draw image
     - [x] Themes support
     - [x] Place stones on board
-    - [x] Stones without dame determine
+    - [x] Stones without dame (liberties) determine
     - [x] Stones without dame remove from goban
     - [ ] Captured areas count
     - [ ] Captured stones count
 - Console
     - [ ] Full game support
 - Bot
-    - TODO
+    - ✏️ TODO
 
 ## Credits
 - [JetBrains Mono typeface](https://www.jetbrains.com/lp/mono/)
