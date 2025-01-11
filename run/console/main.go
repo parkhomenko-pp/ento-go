@@ -8,10 +8,15 @@ import (
 
 func main() {
 	goban := models.NewGoban7()
-	//goban.ChangeTheme(models.NewDarkGobanTheme())
+	goban.ChangeTheme(models.NewDarkGobanTheme())
 
+	goban.PlaceBlack('A', 5)
+	goban.PlaceWhite('A', 4)
 	goban.PlaceBlack('A', 3)
-	goban.PlaceWhite('c', 4)
+	goban.PlaceWhite('D', 4)
+	goban.PlaceBlack('B', 4)
+
+	goban.Print()
 
 	image := goban.GetImage()
 
