@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go-telegram-bot/src/models"
+	"ento-go/src/models"
 	"image/png"
 	"os"
 )

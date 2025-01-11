@@ -1,4 +1,4 @@
-module go-telegram-bot
+module ento-go
 
 go 1.23.4
 
