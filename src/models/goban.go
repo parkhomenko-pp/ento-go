@@ -124,7 +124,7 @@ func (g *Goban) place(j, i uint8, color uint8) {
 	g.removeStonesWithoutLiberties()
 }
 
-func (g *Goban) checkPoint(j, i, c uint8) error {
+func (g *Goban) checkPoint(i, j, c uint8) error {
 	if g.lastStoneColor == empty && c == white {
 		return errors.New("first move must be black")
 	}
@@ -180,7 +180,7 @@ func (g *Goban) PlaceBlack(s rune, i uint8) error {
 
 	i = g.size - i - 1
 
-	if err := g.checkPoint(j, i, black); err != nil {
+	if err := g.checkPoint(i, j, black); err != nil {
 		return err
 	}
 	g.place(i, j, black)
@@ -197,7 +197,7 @@ func (g *Goban) PlaceWhite(s rune, i uint8) error {
 
 	i = g.size - i - 1
 
-	if err := g.checkPoint(j, i, white); err != nil {
+	if err := g.checkPoint(i, j, white); err != nil {
 		return err
 	}
 	g.place(i, j, white)
