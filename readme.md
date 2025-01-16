@@ -36,10 +36,10 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
     - [ ] Captured areas count
     - [ ] Captured stones count
 - Console
-    - ...
+    - [ ] ✏️TODO
     - [ ] Full game support
 - Bot
-    - ...
+    - [ ] ✏️TODO
     - [ ] Full game support
 
 ## Credits
