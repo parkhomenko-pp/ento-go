@@ -138,8 +138,38 @@ func (g *Goban) checkPoint(i, j, c uint8) error {
 		return errors.New("cannot place same color twice")
 	}
 
-	// TODO: check is point have 1 or more breath
-	// 		 exception: surrounded by other color
+	// Temporarily place the stone
+	g.dots[i][j] = c
+	defer func() { g.dots[i][j] = empty }()
+
+	// Check if the move captures any opponent's stones
+	opponentColor := black
+	if c == black {
+		opponentColor = white
+	}
+	visited := make([][]bool, g.size)
+	for i := range visited {
+		visited[i] = make([]bool, g.size)
+	}
+	for _, neighbor := range [][2]uint8{{i - 1, j}, {i + 1, j}, {i, j - 1}, {i, j + 1}} {
+		nx, ny := neighbor[0], neighbor[1]
+		if nx < g.size && ny < g.size && g.dots[nx][ny] == uint8(opponentColor) {
+			group, hasLiberties := g.findGroupAndLiberties(nx, ny, uint8(opponentColor), visited)
+			if !hasLiberties {
+				g.removeGroup(group)
+			}
+		}
+	}
+
+	// Check if the stone or group has at least one liberty
+	visited = make([][]bool, g.size)
+	for i := range visited {
+		visited[i] = make([]bool, g.size)
+	}
+	_, hasLiberties := g.findGroupAndLiberties(i, j, c, visited)
+	if !hasLiberties {
+		return errors.New("move is suicidal")
+	}
 
 	return nil
 }
