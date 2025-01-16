@@ -93,6 +93,106 @@ func TestPlaceWhite(t *testing.T) {
 	}
 }
 
+func TestPlaceStoneWithoutDame(t *testing.T) {
+	goban := NewGoban7()
+
+	// Place initial stones to create a situation with no liberties
+	err := goban.PlaceBlack('D', 4)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	err = goban.PlaceWhite('D', 5)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	err = goban.PlaceBlack('E', 5)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	err = goban.PlaceWhite('C', 4)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	err = goban.PlaceBlack('E', 4)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	err = goban.PlaceWhite('C', 6)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	err = goban.PlaceBlack('E', 6)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	err = goban.PlaceWhite('B', 5)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	// Attempt to place a white stone without liberties
+	err = goban.PlaceWhite('C', 5)
+	if err == nil {
+		t.Errorf("expected error, got nil")
+	}
+
+	if goban.whiteCaptured != 0 {
+		t.Errorf("expected whiteCaptured = 0, got %d", goban.whiteCaptured)
+	}
+
+	goban.Print()
+}
+
+func TestPlaceStoneWithoutDameWithCapture(t *testing.T) {
+	goban := NewGoban7()
+
+	// Place initial stones to create a situation with no liberties
+	err := goban.PlaceBlack('D', 4)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	err = goban.PlaceWhite('D', 5)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	err = goban.PlaceBlack('E', 5)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	err = goban.PlaceWhite('C', 4)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	err = goban.PlaceBlack('E', 4)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	err = goban.PlaceWhite('C', 6)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	err = goban.PlaceBlack('D', 6)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+	err = goban.PlaceWhite('B', 5)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	// Attempt to place a white stone without liberties but can capture
+	err = goban.PlaceBlack('C', 5)
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if goban.whiteCaptured != 1 {
+		t.Errorf("expected whiteCaptured = 1, got %d", goban.whiteCaptured)
+	}
+
+	goban.Print()
+}
+
 func TestChangeTheme(t *testing.T) {
 	goban := NewGoban7()
 	newTheme := NewDarkGobanTheme()
