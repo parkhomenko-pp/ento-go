@@ -131,7 +131,7 @@ func TestPlaceStoneWithoutDame(t *testing.T) {
 	}
 
 	// Attempt to place a white stone without liberties
-	err = goban.PlaceWhite('C', 5)
+	err = goban.PlaceBlack('C', 5)
 	if err == nil {
 		t.Errorf("expected error, got nil")
 	}
@@ -139,8 +139,6 @@ func TestPlaceStoneWithoutDame(t *testing.T) {
 	if goban.whiteCaptured != 0 {
 		t.Errorf("expected whiteCaptured = 0, got %d", goban.whiteCaptured)
 	}
-
-	goban.Print()
 }
 
 func TestPlaceStoneWithoutDameWithCapture(t *testing.T) {
@@ -189,8 +187,6 @@ func TestPlaceStoneWithoutDameWithCapture(t *testing.T) {
 	if goban.whiteCaptured != 1 {
 		t.Errorf("expected whiteCaptured = 1, got %d", goban.whiteCaptured)
 	}
-
-	goban.Print()
 }
 
 func TestChangeTheme(t *testing.T) {
