@@ -36,9 +36,11 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
     - [ ] Captured areas count
     - [ ] Captured stones count
 - Console
+    - ...
     - [ ] Full game support
 - Bot
-    - TODO
+    - ...
+    - [ ] Full game support
 
 ## Credits
 - [JetBrains Mono typeface](https://www.jetbrains.com/lp/mono/)
