@@ -136,8 +136,8 @@ func TestPlaceStoneWithoutDame(t *testing.T) {
 		t.Errorf("expected error, got nil")
 	}
 
-	if goban.whiteCaptured != 0 {
-		t.Errorf("expected whiteCaptured = 0, got %d", goban.whiteCaptured)
+	if goban.whiteStonesCaptured != 0 {
+		t.Errorf("expected whiteStonesCaptured = 0, got %d", goban.whiteStonesCaptured)
 	}
 }
 
@@ -184,8 +184,8 @@ func TestPlaceStoneWithoutDameWithCapture(t *testing.T) {
 		t.Errorf("expected no error, got %v", err)
 	}
 
-	if goban.whiteCaptured != 1 {
-		t.Errorf("expected whiteCaptured = 1, got %d", goban.whiteCaptured)
+	if goban.whiteStonesCaptured != 1 {
+		t.Errorf("expected whiteStonesCaptured = 1, got %d", goban.whiteStonesCaptured)
 	}
 }
 
@@ -333,8 +333,8 @@ func TestRemoveStonesWithoutLiberties(t *testing.T) {
 	goban := NewGoban7()
 	for testName, test := range tests {
 		// clear previous data
-		goban.whiteCaptured = 0
-		goban.blackCaptured = 0
+		goban.whiteStonesCaptured = 0
+		goban.blackStonesCaptured = 0
 		goban.dots = test.Dots
 
 		// run logic
@@ -350,21 +350,66 @@ func TestRemoveStonesWithoutLiberties(t *testing.T) {
 			)
 		}
 
-		if test.ExpectedWhiteCaptured != goban.whiteCaptured {
+		if test.ExpectedWhiteCaptured != goban.whiteStonesCaptured {
 			t.Errorf(
 				"%s: goban white captured is wrong. \nexpected: %d\nrecieved: %d\n",
 				testName,
 				test.ExpectedWhiteCaptured,
-				goban.whiteCaptured,
+				goban.whiteStonesCaptured,
 			)
 		}
 
-		if test.ExpectedBlackCaptured != goban.blackCaptured {
+		if test.ExpectedBlackCaptured != goban.blackStonesCaptured {
 			t.Errorf(
 				"%s: goban black captured is wrong. \nexpected: %d\nrecieved: %d\n",
 				testName,
 				test.ExpectedBlackCaptured,
-				goban.blackCaptured,
+				goban.blackStonesCaptured,
+			)
+		}
+	}
+}
+
+func TestCountSurroundedStones(t *testing.T) {
+	jsonTestFile, err := os.ReadFile("./test_data/goban_test_count_surrounded_stones.json")
+	if err != nil {
+		panic(err)
+	}
+
+	type testStruct struct {
+		Dots                  [][]uint8
+		WhiteSurroundedStones uint16 `json:"white_surrounded_stones"`
+		BlackSurroundedStones uint16 `json:"black_surrounded_stones"`
+	}
+	tests := []testStruct{}
+
+	err = json.Unmarshal(jsonTestFile, &tests)
+	if err != nil {
+		t.Errorf("cannot parse jsonTestFile: %s", err)
+	}
+
+	goban := NewGoban7()
+	for i, test := range tests {
+		goban.dots = test.Dots
+
+		whiteSurroundedStones := goban.CountSurroundedWhiteStones()
+
+		if whiteSurroundedStones != test.WhiteSurroundedStones {
+			t.Errorf(
+				"test %d: white surrounded is wrong. expected: %d, recieved: %d",
+				i,
+				test.WhiteSurroundedStones,
+				whiteSurroundedStones,
+			)
+		}
+
+		blackSurroundedStones := goban.CountSurroundedBlackStones()
+		if blackSurroundedStones != test.BlackSurroundedStones {
+			t.Errorf(
+				"test %d: black surrounded is wrong. expected: %d, recieved: %d",
+				i,
+				test.BlackSurroundedStones,
+				blackSurroundedStones,
 			)
 		}
 	}

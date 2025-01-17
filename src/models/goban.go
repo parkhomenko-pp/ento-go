@@ -26,8 +26,8 @@ type Goban struct {
 	lastI          uint8
 	lastJ          uint8
 
-	whiteCaptured uint16
-	blackCaptured uint16
+	whiteStonesCaptured uint16
+	blackStonesCaptured uint16
 }
 
 const (
@@ -101,13 +101,13 @@ func (g *Goban) Print() {
 		case 0:
 			println("\tKomi: ", strconv.FormatFloat(float64(g.komi), 'f', 1, 32))
 		case 2:
-			println("\tBlack territory: ", g.CountBlack())
+			println("\tBlack territory: ", g.CountSurroundedBlackStones())
 		case 3:
-			println("\tWhite territory: ", g.CountWhite())
+			println("\tWhite territory: ", g.CountSurroundedWhiteStones())
 		case 5:
-			println("\tWhite captured: ", g.whiteCaptured)
+			println("\tWhite captured: ", g.whiteStonesCaptured)
 		case 6:
-			println("\tBlack captured: ", g.blackCaptured)
+			println("\tBlack captured: ", g.blackStonesCaptured)
 		default:
 			println()
 		}
@@ -414,22 +414,30 @@ func (g *Goban) removeGroup(group [][2]uint8) {
 	for _, point := range group {
 		x, y := point[0], point[1]
 		if g.dots[x][y] == black {
-			g.blackCaptured++
+			g.blackStonesCaptured++
 		} else if g.dots[x][y] == white {
-			g.whiteCaptured++
+			g.whiteStonesCaptured++
 		}
 		g.dots[x][y] = empty
 	}
 }
 
-func (g *Goban) countSurroundedPoints(_ uint8) int {
+func (g *Goban) countSurroundedStones(color uint8) uint16 {
 	return 0
 }
 
-func (g *Goban) CountBlack() int {
-	return g.countSurroundedPoints(black)
+func (g *Goban) CountSurroundedBlackStones() uint16 {
+	return g.countSurroundedStones(black)
 }
 
-func (g *Goban) CountWhite() int {
-	return g.countSurroundedPoints(white)
+func (g *Goban) CountSurroundedWhiteStones() uint16 {
+	return g.countSurroundedStones(white)
+}
+
+func (g *Goban) CountWhiteTerritory() int {
+	return 0
+}
+
+func (g *Goban) CountBlackTerritory() int {
+	return 0
 }
