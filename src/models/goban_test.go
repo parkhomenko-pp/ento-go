@@ -389,13 +389,14 @@ func TestTerritoryCount(t *testing.T) {
 	}
 
 	goban := NewGoban7()
-	for _, test := range tests {
+	for i, test := range tests {
 		goban.dots = test.Dots
 		goban.RecountTerritory()
 
 		if test.WhiteTerritory != goban.GetTerritoryCount(white) {
 			t.Errorf(
-				"white territory count is wrong. \nexpected: %d\nrecieved: %d\n",
+				"%d: white territory count is wrong. \nexpected: %d\nrecieved: %d\n",
+				i,
 				test.WhiteTerritory,
 				goban.GetTerritoryCount(white),
 			)
@@ -403,7 +404,8 @@ func TestTerritoryCount(t *testing.T) {
 
 		if test.BlackTerritory != goban.GetTerritoryCount(black) {
 			t.Errorf(
-				"black territory count is wrong. \nexpected: %d\nrecieved: %d\n",
+				"%d: black territory count is wrong. \nexpected: %d\nrecieved: %d\n",
+				i,
 				test.BlackTerritory,
 				goban.GetTerritoryCount(black),
 			)

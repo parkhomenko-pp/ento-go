@@ -437,6 +437,7 @@ func (g *Goban) CountWhite() int {
 }
 
 func (g *Goban) RecountTerritory() {
+	// Initialize the territory array
 	dots := make([][]uint8, g.size)
 	for i := range dots {
 		dots[i] = make([]uint8, g.size)
