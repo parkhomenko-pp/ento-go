@@ -28,6 +28,8 @@ type Goban struct {
 
 	whiteCaptured uint16
 	blackCaptured uint16
+
+	dotsTerritory [][]uint8
 }
 
 const (
@@ -432,4 +434,28 @@ func (g *Goban) CountBlack() int {
 
 func (g *Goban) CountWhite() int {
 	return g.countSurroundedPoints(white)
+}
+
+func (g *Goban) RecountTerritory() {
+	dots := make([][]uint8, g.size)
+	for i := range dots {
+		dots[i] = make([]uint8, g.size)
+	}
+	g.dotsTerritory = dots
+
+	// TODO: implement territory counting
+}
+
+func (g *Goban) GetTerritoryCount(color uint8) uint16 {
+	count := uint16(0)
+
+	for _, row := range g.dotsTerritory {
+		for _, dot := range row {
+			if dot == color {
+				count++
+			}
+		}
+	}
+
+	return count
 }
