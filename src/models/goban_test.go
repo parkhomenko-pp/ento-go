@@ -370,8 +370,8 @@ func TestRemoveStonesWithoutLiberties(t *testing.T) {
 	}
 }
 
-func TestTerritoryCount(t *testing.T) {
-	jsonTestFile, err := os.ReadFile("./test_data/goban_test_territory_count.json")
+func TestGetTerritoriesCounts(t *testing.T) {
+	jsonTestFile, err := os.ReadFile("./test_data/goban_test_territories_counts.json")
 	if err != nil {
 		panic(err)
 	}
@@ -391,23 +391,22 @@ func TestTerritoryCount(t *testing.T) {
 	goban := NewGoban7()
 	for i, test := range tests {
 		goban.dots = test.Dots
-		goban.RecountTerritory()
+		blackCount, whiteCount := goban.GetTerritoriesCounts()
 
-		if test.WhiteTerritory != goban.GetTerritoryCount(white) {
-			t.Errorf(
-				"%d: white territory count is wrong. \nexpected: %d\nrecieved: %d\n",
-				i,
-				test.WhiteTerritory,
-				goban.GetTerritoryCount(white),
-			)
-		}
-
-		if test.BlackTerritory != goban.GetTerritoryCount(black) {
+		if test.BlackTerritory != blackCount {
 			t.Errorf(
 				"%d: black territory count is wrong. \nexpected: %d\nrecieved: %d\n",
 				i,
 				test.BlackTerritory,
-				goban.GetTerritoryCount(black),
+				blackCount,
+			)
+		}
+		if test.WhiteTerritory != whiteCount {
+			t.Errorf(
+				"%d: white territory count is wrong. \nexpected: %d\nrecieved: %d\n",
+				i,
+				test.WhiteTerritory,
+				whiteCount,
 			)
 		}
 	}

@@ -436,7 +436,7 @@ func (g *Goban) CountWhite() int {
 	return g.countSurroundedPoints(white)
 }
 
-func (g *Goban) RecountTerritory() {
+func (g *Goban) GetTerritoriesCounts() (uint16, uint16) {
 	// Initialize the territory array
 	dots := make([][]uint8, g.size)
 	for i := range dots {
@@ -445,9 +445,11 @@ func (g *Goban) RecountTerritory() {
 	g.dotsTerritory = dots
 
 	// TODO: implement territory counting
+
+	return g.getTerritoryCount(black), g.getTerritoryCount(white)
 }
 
-func (g *Goban) GetTerritoryCount(color uint8) uint16 {
+func (g *Goban) getTerritoryCount(color uint8) uint16 {
 	count := uint16(0)
 
 	for _, row := range g.dotsTerritory {
