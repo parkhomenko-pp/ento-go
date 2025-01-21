@@ -28,19 +28,22 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
 
 ## Roadmap
 - Goban
-    - [x] Draw image
-    - [x] Themes support
-    - [x] Place stones on board
-    - [x] Stones without dame (liberties) determine
-    - [x] Stones without dame remove from goban
-    - [ ] Captured areas count
-    - [ ] Captured stones count
+  - [x] Draw image
+  - [x] Themes support
+  - [x] Place stones on board
+  - [x] Stones without dame (liberties) determine
+  - [x] Stones without dame remove from goban
+  - [ ] Captured areas count
+  - [ ] Captured stones count
+- Refactor
+  - [ ] Move Printer from goban
+  - [ ] Move Image generator from goban
 - Console
-    - [ ] ✏️TODO
-    - [ ] Full game support
+  - [ ] ✏️TODO
+  - [ ] Full game support
 - Bot
-    - [ ] ✏️TODO
-    - [ ] Full game support
+  - [ ] ✏️TODO
+  - [ ] Full game support
 
 ## Credits
 - [JetBrains Mono typeface](https://www.jetbrains.com/lp/mono/)
