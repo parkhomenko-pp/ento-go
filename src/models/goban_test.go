@@ -414,3 +414,47 @@ func TestCountSurroundedStones(t *testing.T) {
 		}
 	}
 }
+
+func TestGetTerritoriesCounts(t *testing.T) {
+	jsonTestFile, err := os.ReadFile("./test_data/goban_test_territories_counts.json")
+	if err != nil {
+		panic(err)
+	}
+
+	type testStruct struct {
+		Dots           [][]uint8
+		WhiteTerritory uint16 `json:"white_territory"`
+		BlackTerritory uint16 `json:"black_territory"`
+	}
+	tests := []testStruct{}
+
+	err = json.Unmarshal(jsonTestFile, &tests)
+	if err != nil {
+		t.Errorf("cannot parse jsonTestFile: %s", err)
+	}
+
+	goban := NewGoban7()
+	for i, test := range tests {
+		goban.dots = test.Dots
+		blackCount, whiteCount := goban.GetTerritoriesCounts()
+
+		if test.BlackTerritory != blackCount {
+			t.Errorf(
+				"%d: black territory count is wrong. \nexpected: %d\nrecieved: %d\n",
+				i,
+				test.BlackTerritory,
+				blackCount,
+			)
+			goban.Print()
+		}
+		if test.WhiteTerritory != whiteCount {
+			t.Errorf(
+				"%d: white territory count is wrong. \nexpected: %d\nrecieved: %d\n",
+				i,
+				test.WhiteTerritory,
+				whiteCount,
+			)
+			goban.Print()
+		}
+	}
+}

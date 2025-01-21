@@ -26,6 +26,7 @@ type Goban struct {
 	lastI          uint8
 	lastJ          uint8
 
+	dotsTerritory [][]uint8
 	whiteStonesCaptured uint16
 	blackStonesCaptured uint16
 }
@@ -440,4 +441,93 @@ func (g *Goban) CountWhiteTerritory() int {
 
 func (g *Goban) CountBlackTerritory() int {
 	return 0
+}
+
+func (g *Goban) GetTerritoriesCounts() (uint16, uint16) {
+	// Initialize the territory array
+	dots := make([][]uint8, g.size)
+	for i := range dots {
+		dots[i] = make([]uint8, g.size)
+	}
+	g.dotsTerritory = dots
+
+	// Iterate over all points on the board
+	for i := uint8(0); i < g.size; i++ {
+		for j := uint8(0); j < g.size; j++ {
+			if g.dots[i][j] == empty && g.dotsTerritory[i][j] == empty {
+				// Check if the empty point is surrounded by one color
+				group, c := g.findTerritoryGroup(i, j)
+				if c != empty {
+					for _, point := range group {
+						g.dotsTerritory[point[0]][point[1]] = c
+					}
+				}
+			}
+		}
+	}
+
+	return g.getTerritoryCount(black), g.getTerritoryCount(white)
+}
+
+func (g *Goban) findTerritoryGroup(i, j uint8) ([][2]uint8, uint8) {
+	var group [][2]uint8
+	var stack [][2]uint8
+	stack = append(stack, [2]uint8{i, j})
+	visited := make([][]bool, g.size)
+	for i := range visited {
+		visited[i] = make([]bool, g.size)
+	}
+	c := empty
+	isMixed := false
+
+	for len(stack) > 0 {
+		point := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		x, y := point[0], point[1]
+
+		if visited[x][y] {
+			continue
+		}
+		visited[x][y] = true
+		group = append(group, [2]uint8{x, y})
+
+		neighbors := [][2]uint8{
+			{x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1},
+		}
+
+		for _, neighbor := range neighbors {
+			nx, ny := neighbor[0], neighbor[1]
+			if nx < g.size && ny < g.size {
+				if g.dots[nx][ny] == empty && !visited[nx][ny] {
+					stack = append(stack, [2]uint8{nx, ny})
+				} else if g.dots[nx][ny] != empty {
+					if c == empty {
+						c = int(g.dots[nx][ny])
+					} else if c != int(g.dots[nx][ny]) {
+						isMixed = true
+					}
+				}
+			}
+		}
+	}
+
+	if isMixed {
+		c = empty
+	}
+
+	return group, uint8(c)
+}
+
+func (g *Goban) getTerritoryCount(color uint8) uint16 {
+	count := uint16(0)
+
+	for _, row := range g.dotsTerritory {
+		for _, dot := range row {
+			if dot == color {
+				count++
+			}
+		}
+	}
+
+	return count
 }
