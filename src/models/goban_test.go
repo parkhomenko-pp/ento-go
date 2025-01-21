@@ -400,6 +400,7 @@ func TestGetTerritoriesCounts(t *testing.T) {
 				test.BlackTerritory,
 				blackCount,
 			)
+			goban.Print()
 		}
 		if test.WhiteTerritory != whiteCount {
 			t.Errorf(
@@ -408,6 +409,7 @@ func TestGetTerritoriesCounts(t *testing.T) {
 				test.WhiteTerritory,
 				whiteCount,
 			)
+			goban.Print()
 		}
 	}
 }

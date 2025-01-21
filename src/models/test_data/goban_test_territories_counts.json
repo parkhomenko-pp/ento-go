@@ -35,8 +35,8 @@
       [0,0,1,2,0,0,0],
       [0,0,1,2,0,0,0]
     ],
-    "white_territory": 14,
-    "black_territory": 21
+    "white_territory": 21,
+    "black_territory": 14
   },
   {
     "dots" : [
