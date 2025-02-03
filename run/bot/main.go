@@ -1,23 +1,30 @@
 package main
 
 import (
-	"database/sql"
+	"ento-go/src/models"
+	"errors"
+	"gorm.io/driver/sqlite"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
-	_ "github.com/mattn/go-sqlite3"
+
+	_ "gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func main() {
 	loadEnv()
 
 	db := connectToDatabase()
-	defer db.Close()
+	if db != nil {
+		log.Println("Connected to database")
+	}
 
-	//startBot()
+	startBot(db)
 }
 
 func loadEnv() {
@@ -27,32 +34,19 @@ func loadEnv() {
 	}
 }
 
-func connectToDatabase() *sql.DB {
-	if _, err := os.Stat("./tmp/data.db"); os.IsNotExist(err) {
-		log.Println("data.db file does not exist, copying empty.db")
-		copyEmptyDatabase()
+func connectToDatabase() *gorm.DB {
+	// Подключение к базе SQLite (файл создастся автоматически, если его нет)
+	db, err := gorm.Open(sqlite.Open("./tmp/data.db"), &gorm.Config{})
+	if err != nil {
+		log.Fatal("Ошибка подключения к БД:", err)
 	}
 
-	db, err := sql.Open("sqlite3", "./tmp/data.db")
-	if err != nil {
-		log.Fatalf("Error opening data.db file: %v", err)
+	// Авто-миграция (создаст таблицу, если её нет)
+	if err := db.AutoMigrate(&models.Player{}); err != nil {
+		log.Fatal("Ошибка миграции:", err)
 	}
-	log.Println(db)
+
 	return db
-}
-
-func copyEmptyDatabase() {
-	input, err := os.ReadFile("./db/empty.db")
-	if err != nil {
-		log.Fatalf("Error reading empty.db file: %v", err)
-	}
-
-	err = os.WriteFile("./tmp/data.db", input, 0644)
-	if err != nil {
-		log.Fatalf("Error writing data.db file: %v", err)
-	}
-
-	log.Println("Successfully copied empty.db to data.db")
 }
 
 func initializeBot(apiKey string) *tgbotapi.BotAPI {
@@ -72,10 +66,18 @@ func initializeBot(apiKey string) *tgbotapi.BotAPI {
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
+	chatString := os.Getenv("TELEGRAM_ADMIN_CHAT_ID")
+	if chatString != "" {
+		chatId, err := strconv.ParseInt(chatString, 10, 64)
+		if err == nil {
+			bot.Send(tgbotapi.NewMessage(chatId, "Bot has been started"))
+		}
+	}
+
 	return bot
 }
 
-func startBot() {
+func startBot(db *gorm.DB) {
 	apiKey := os.Getenv("TELEGRAM_API_KEY")
 	if apiKey == "" {
 		log.Fatalf("TELEGRAM_API_KEY not set in .env file")
@@ -90,12 +92,16 @@ func startBot() {
 
 	for update := range updates {
 		if update.Message != nil { // If we got a message
-			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+			var player models.Player
+			result := db.First(&player, "chat_id = ?", update.Message.Chat.ID)
 
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-			msg.ReplyToMessageID = update.Message.MessageID
+			if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+				bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Hi, stranger"))
+			} else {
+				bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Hi, "+player.Nickname))
+			}
 
-			bot.Send(msg)
+			log.Println("Got a message from: " + strconv.Itoa(int(update.Message.Chat.ID)) + "(nickname: " + update.Message.Chat.UserName + ")")
 		}
 	}
 }
