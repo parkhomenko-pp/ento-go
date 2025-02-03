@@ -1,9 +1,8 @@
 package models
 
 type Player struct {
-	ID         int `gorm:"primaryKey"`
+	ChatID     int64 `gorm:"primaryKey;unique"`
 	Nickname   string
-	ChatID     int64
 	ThemeId    uint8
 	GamesCount int
 	WinsCount  int

@@ -20,7 +20,6 @@ func main() {
 }
 
 func initParams() (*gorm.DB, *tgbotapi.BotAPI) {
-
 	// init env
 	if err := godotenv.Load(); err != nil {
 		log.Fatalf("Error loading .env file")
