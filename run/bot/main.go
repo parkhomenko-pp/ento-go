@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
@@ -16,7 +17,7 @@ func main() {
 	db := connectToDatabase()
 	defer db.Close()
 
-	startBot()
+	//startBot()
 }
 
 func loadEnv() {
@@ -27,15 +28,16 @@ func loadEnv() {
 }
 
 func connectToDatabase() *sql.DB {
-	db, err := sql.Open("sqlite3", "./db/data.db")
-	if err != nil {
-		println("data-notfound")
+	if _, err := os.Stat("./tmp/data.db"); os.IsNotExist(err) {
+		log.Println("data.db file does not exist, copying empty.db")
 		copyEmptyDatabase()
-		db, err = sql.Open("sqlite3", "./db/data.db")
-		if err != nil {
-			log.Fatalf("Error opening data.db file: %v", err)
-		}
 	}
+
+	db, err := sql.Open("sqlite3", "./tmp/data.db")
+	if err != nil {
+		log.Fatalf("Error opening data.db file: %v", err)
+	}
+	log.Println(db)
 	return db
 }
 
@@ -45,7 +47,7 @@ func copyEmptyDatabase() {
 		log.Fatalf("Error reading empty.db file: %v", err)
 	}
 
-	err = os.WriteFile("./db/data.db", input, 0644)
+	err = os.WriteFile("./tmp/data.db", input, 0644)
 	if err != nil {
 		log.Fatalf("Error writing data.db file: %v", err)
 	}
@@ -64,7 +66,7 @@ func initializeBot(apiKey string) *tgbotapi.BotAPI {
 		log.Panic(err)
 	}
 
-	if debug == "TRUE" {
+	if debug == strings.ToLower("true") {
 		bot.Debug = true
 	}
 
