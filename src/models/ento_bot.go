@@ -1,6 +1,7 @@
 package models
 
 import (
+	"ento-go/src/models/menus"
 	"errors"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
@@ -20,8 +21,10 @@ func (b *EntoBot) Start() {
 	updates := b.Tg.GetUpdatesChan(u)
 
 	for update := range updates {
-		if update.Message != nil { // If we got a message
+		if update.Message != nil {
 			b.ReceiveMessage(update.Message)
+		} else if update.CallbackQuery != nil {
+			b.HandleCallbackQuery(update.CallbackQuery)
 		}
 	}
 }
@@ -31,10 +34,43 @@ func (b *EntoBot) ReceiveMessage(message *tgbotapi.Message) {
 	result := b.Db.First(&player, "chat_id = ?", message.Chat.ID)
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		b.Tg.Send(tgbotapi.NewMessage(message.Chat.ID, "Hi, stranger"))
+		if message.Text == "/start" || message.Text == "/menu" {
+			msg := tgbotapi.NewMessage(message.Chat.ID, "Please register by providing your nickname.")
+			b.Tg.Send(msg)
+		} else {
+			player = NewPlayer(message.Chat.ID, message.Text)
+			b.Db.Create(&player)
+			msg := tgbotapi.NewMessage(message.Chat.ID, "Hi, "+player.Nickname)
+			msg.ReplyMarkup = menus.CreateMainMenu()
+			b.Tg.Send(msg)
+		}
 	} else {
-		b.Tg.Send(tgbotapi.NewMessage(message.Chat.ID, "Hi, "+player.Nickname))
+		msg := tgbotapi.NewMessage(message.Chat.ID, "Hi, "+player.Nickname)
+		msg.ReplyMarkup = menus.CreateMainMenu()
+		b.Tg.Send(msg)
 	}
 
-	log.Println("Got a message from: " + strconv.Itoa(int(message.Chat.ID)) + "(nickname: " + message.Chat.UserName + ")")
+	log.Println("Got a message from: " + strconv.Itoa(int(message.Chat.ID)) + " (nickname: " + message.Chat.UserName + ")")
+}
+
+func (b *EntoBot) HandleCallbackQuery(callbackQuery *tgbotapi.CallbackQuery) {
+	var responseText string
+
+	switch callbackQuery.Data {
+	case "option_1":
+		responseText = "You selected Option 1"
+	case "option_2":
+		responseText = "You selected Option 2"
+	case "option_3":
+		responseText = "You selected Option 3"
+	default:
+		responseText = "Unknown option"
+	}
+
+	msg := tgbotapi.NewMessage(callbackQuery.Message.Chat.ID, responseText)
+	b.Tg.Send(msg)
+
+	// Optionally, you can also answer the callback query
+	callback := tgbotapi.NewCallback(callbackQuery.ID, responseText)
+	b.Tg.Request(callback)
 }

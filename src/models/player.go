@@ -7,3 +7,7 @@ type Player struct {
 	GamesCount int
 	WinsCount  int
 }
+
+func NewPlayer(chatID int64, nickname string) Player {
+	return Player{ChatID: chatID, Nickname: nickname, ThemeId: light, GamesCount: 0, WinsCount: 0}
+}
