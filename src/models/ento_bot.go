@@ -7,11 +7,19 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"strconv"
+	"time"
+)
+
+const (
+	StateStart        = "start"
+	StateRegistration = "registration"
+	StateMainMenu     = "main_menu"
 )
 
 type EntoBot struct {
-	Db *gorm.DB
-	Tg *tgbotapi.BotAPI
+	Db     *gorm.DB
+	Tg     *tgbotapi.BotAPI
+	States map[int64]UserState
 }
 
 func (b *EntoBot) Start() {
@@ -20,11 +28,27 @@ func (b *EntoBot) Start() {
 
 	updates := b.Tg.GetUpdatesChan(u)
 
+	ticker := time.NewTicker(1 * time.Hour)
+	defer ticker.Stop()
+	go func() {
+		for range ticker.C {
+			b.CleanUpInactiveStates(24 * time.Hour)
+		}
+	}()
+
 	for update := range updates {
 		if update.Message != nil {
 			b.ReceiveMessage(update.Message)
 		} else if update.CallbackQuery != nil {
 			b.HandleCallbackQuery(update.CallbackQuery)
+		}
+	}
+}
+
+func (b *EntoBot) CleanUpInactiveStates(duration time.Duration) {
+	for chatID, userState := range b.States {
+		if time.Since(userState.LastActive) > duration {
+			delete(b.States, chatID)
 		}
 	}
 }
