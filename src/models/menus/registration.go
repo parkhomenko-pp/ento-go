@@ -12,16 +12,20 @@ type Registration struct {
 	Player  *entities.Player
 }
 
+func (r *Registration) GetFirstTimeMessage() *tgbotapi.MessageConfig {
+	message := tgbotapi.NewMessage(0, "Registration1")
+	return &message
+}
+
 func (r *Registration) GetName() string {
 	return MenuRegistration
 }
 
 func (r *Registration) DoAction() {
-	//TODO implement me
-	panic("implement me")
+	// TODO: implement
 }
 
 func (r *Registration) GetReplyMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(0, "Registration")
+	message := tgbotapi.NewMessage(0, "Registration2")
 	return &message
 }

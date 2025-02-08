@@ -45,11 +45,28 @@ func (m *Menu) InitMenu() {
 }
 
 func (m *Menu) DoAction() {
-	// TODO
+	if m.Player.LastMenu != m.Menuable.GetName() {
+		return
+	}
+	m.Menuable.DoAction()
+}
+
+func (m *Menu) GetFirstTimeMessage() *tgbotapi.MessageConfig {
+	message := m.Menuable.GetFirstTimeMessage()
+	message.ChatID = m.Message.Chat.ID
+	return message
 }
 
 func (m *Menu) GetReplyMessage() *tgbotapi.MessageConfig {
 	message := m.Menuable.GetReplyMessage()
 	message.ChatID = m.Message.Chat.ID
 	return message
+}
+
+func (m *Menu) IsFirstTime() bool {
+	return m.Player.LastMenu != m.Menuable.GetName()
+}
+
+func (m *Menu) ChangeLastMenu() {
+	// TODO
 }

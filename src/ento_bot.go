@@ -42,13 +42,24 @@ func (b *EntoBot) ProcessMessage(message *tgbotapi.Message) {
 	// определить меню в котором он находится
 	menu := b.GetMenu(message, player)
 
+	log.Println(menu)
+
+	// если это первый раз, то отправить первое сообщение меню
+	if menu.IsFirstTime() {
+		b.Tg.Send(menu.GetFirstTimeMessage())
+		player.LastMenu = menu.GetName()
+		b.Db.Save(&player)
+		return
+	}
+
 	// сделать действие
 	menu.DoAction()
 
-	// ответить на сообщение
-	b.Tg.Send(menu.GetReplyMessage())
+	// изменить последнее меню
+	menu.ChangeLastMenu()
 
-	log.Println(menu)
+	// отправить ответное сообщение
+	b.Tg.Send(menu.GetReplyMessage())
 }
 
 func (b *EntoBot) GetPlayer(chatID int64) *entities.Player {
