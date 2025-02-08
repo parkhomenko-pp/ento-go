@@ -1,6 +1,7 @@
 package main
 
 import (
+	"ento-go/src"
 	"ento-go/src/models"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
@@ -14,12 +15,11 @@ import (
 )
 
 func main() {
-	db, tgBot := initParams()
-	entoBot := models.EntoBot{Db: db, Tg: tgBot}
+	entoBot := initBot()
 	entoBot.Start()
 }
 
-func initParams() (*gorm.DB, *tgbotapi.BotAPI) {
+func initBot() (entoBot *src.EntoBot) {
 	// init env
 	if err := godotenv.Load(); err != nil {
 		log.Fatalf("Error loading .env file")
@@ -28,6 +28,10 @@ func initParams() (*gorm.DB, *tgbotapi.BotAPI) {
 	// init tg bot
 	apiKey := getEnvVar("TELEGRAM_API_KEY")
 	debug := getEnvVar("DEBUG")
+	adminChatID, err := strconv.ParseInt(getEnvVar("TELEGRAM_ADMIN_CHAT_ID"), 10, 64)
+	if err != nil {
+		log.Fatalf("Invalid TELEGRAM_ADMIN_CHAT_ID: %v", err)
+	}
 
 	bot, err := tgbotapi.NewBotAPI(apiKey)
 	if err != nil {
@@ -53,7 +57,9 @@ func initParams() (*gorm.DB, *tgbotapi.BotAPI) {
 		log.Fatal("Ошибка миграции:", err)
 	}
 
-	return db, bot
+	entoBot = &src.EntoBot{Db: db, Tg: bot, AdminChatID: adminChatID}
+
+	return entoBot
 }
 
 func getEnvVar(key string) string {
