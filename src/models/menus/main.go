@@ -12,6 +12,10 @@ type Main struct {
 	Player  *entities.Player
 }
 
+func (m *Main) GetName() string {
+	return MenuMain
+}
+
 func (m *Main) GetReplyMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(0, "Main")
 	return &message

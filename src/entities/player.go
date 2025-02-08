@@ -18,7 +18,7 @@ func NewPlayer(chatID int64) *Player {
 		ChatID:     chatID,
 		LastMenu:   "",
 		Nickname:   "",
-		ThemeId:    1,
+		ThemeId:    0,
 		GamesCount: 0,
 		WinsCount:  0,
 	}

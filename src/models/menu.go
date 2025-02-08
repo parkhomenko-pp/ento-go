@@ -3,6 +3,7 @@ package models
 import (
 	"ento-go/src/entities"
 	"ento-go/src/models/menus"
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -11,6 +12,21 @@ type Menu struct {
 	Player  *entities.Player
 
 	menus.Menuable
+}
+
+func (m *Menu) String() string {
+	nickname := ""
+	if m.Player.Nickname != "" {
+		nickname = m.Player.Nickname
+	} else {
+		nickname = "[Anonymous]"
+	}
+
+	return fmt.Sprintf(
+		"Player: %v\t Menu: %v",
+		nickname,
+		m.Menuable.GetName(),
+	)
 }
 
 func (m *Menu) InitMenu() {

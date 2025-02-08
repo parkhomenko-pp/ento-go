@@ -12,6 +12,10 @@ type Registration struct {
 	Player  *entities.Player
 }
 
+func (r *Registration) GetName() string {
+	return MenuRegistration
+}
+
 func (r *Registration) DoAction() {
 	//TODO implement me
 	panic("implement me")

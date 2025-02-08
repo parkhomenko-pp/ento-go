@@ -5,6 +5,10 @@ import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 type NotFound struct {
 }
 
+func (n *NotFound) GetName() string {
+	return "not_found"
+}
+
 func (n *NotFound) DoAction() {
 	// TODO:
 	// 	1. change menu to main or registration

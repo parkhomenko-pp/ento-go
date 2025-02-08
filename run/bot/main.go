@@ -2,7 +2,7 @@ package main
 
 import (
 	"ento-go/src"
-	"ento-go/src/models"
+	"ento-go/src/entities"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlite"
@@ -53,7 +53,7 @@ func initBot() (entoBot *src.EntoBot) {
 		log.Fatal("Ошибка подключения к БД:", err)
 	}
 
-	if err := db.AutoMigrate(&models.Player{}); err != nil {
+	if err := db.AutoMigrate(&entities.Player{}); err != nil {
 		log.Fatal("Ошибка миграции:", err)
 	}
 
