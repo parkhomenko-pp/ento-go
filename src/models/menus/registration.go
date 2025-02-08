@@ -1,10 +1,15 @@
 package menus
 
-import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+import (
+	"ento-go/src/entities"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+)
 
 const MenuRegistration = "registration"
 
 type Registration struct {
+	Message *tgbotapi.Message
+	Player  *entities.Player
 }
 
 func (r *Registration) DoAction() {

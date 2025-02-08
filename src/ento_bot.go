@@ -1,6 +1,7 @@
 package src
 
 import (
+	"ento-go/src/entities"
 	"ento-go/src/models"
 	"errors"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -50,20 +51,20 @@ func (b *EntoBot) ProcessMessage(message *tgbotapi.Message) {
 	log.Println(menu)
 }
 
-func (b *EntoBot) GetPlayer(chatID int64) *models.Player {
-	var player *models.Player
+func (b *EntoBot) GetPlayer(chatID int64) *entities.Player {
+	var player *entities.Player
 
 	result := b.Db.First(&player, "chat_id = ?", chatID)
 	if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return player
 	}
 
-	player = models.NewPlayer(chatID)
+	player = entities.NewPlayer(chatID)
 	b.Db.Create(&player)
 	return player
 }
 
-func (b *EntoBot) GetMenu(message *tgbotapi.Message, player *models.Player) *models.Menu {
+func (b *EntoBot) GetMenu(message *tgbotapi.Message, player *entities.Player) *models.Menu {
 	menu := new(models.Menu)
 	menu.Message = message
 	menu.Player = player

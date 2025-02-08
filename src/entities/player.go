@@ -1,4 +1,4 @@
-package models
+package entities
 
 type Player struct {
 	ChatID     int64 `gorm:"primaryKey;unique"`
@@ -18,7 +18,7 @@ func NewPlayer(chatID int64) *Player {
 		ChatID:     chatID,
 		LastMenu:   "",
 		Nickname:   "",
-		ThemeId:    light,
+		ThemeId:    1,
 		GamesCount: 0,
 		WinsCount:  0,
 	}
