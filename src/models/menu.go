@@ -12,6 +12,22 @@ type Menu struct {
 	menus.Menuable
 }
 
+func (m *Menu) InitMenu() {
+	switch m.Player.LastMenu {
+	case menus.MenuRegistration:
+		m.Menuable = &menus.Registration{}
+	case menus.MenuMain:
+		m.Menuable = &menus.Main{}
+
+	default:
+		if m.Player.Nickname == "" {
+			m.Menuable = &menus.Registration{}
+		} else {
+			m.Menuable = &menus.NotFound{}
+		}
+	}
+}
+
 func (m *Menu) DoAction() {
 	// TODO
 }

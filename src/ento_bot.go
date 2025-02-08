@@ -2,7 +2,6 @@ package src
 
 import (
 	"ento-go/src/models"
-	"ento-go/src/models/menus"
 	"errors"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
@@ -68,20 +67,7 @@ func (b *EntoBot) GetMenu(message *tgbotapi.Message, player *models.Player) *mod
 	menu := new(models.Menu)
 	menu.Message = message
 	menu.Player = player
-
-	switch player.LastMenu {
-	case menus.MenuRegistration:
-		menu.Menuable = &menus.Registration{}
-	case menus.MenuMain:
-		menu.Menuable = &menus.Main{}
-
-	default:
-		if player.Nickname == "" {
-			menu.Menuable = &menus.Registration{}
-		} else {
-			menu.Menuable = &menus.NotFound{}
-		}
-	}
+	menu.InitMenu()
 
 	return menu
 }
