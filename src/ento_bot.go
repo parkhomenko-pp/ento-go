@@ -45,9 +45,10 @@ func (b *EntoBot) ProcessMessage(message *tgbotapi.Message) {
 	log.Println(menu)
 
 	// если это первый раз, то отправить первое сообщение меню
-	if menu.IsFirstTime() {
+	if player.IsMenuVisited == false {
 		b.Tg.Send(menu.GetFirstTimeMessage())
 		player.LastMenu = menu.GetName()
+		player.IsMenuVisited = true
 		b.Db.Save(&player)
 		return
 	}
@@ -58,8 +59,18 @@ func (b *EntoBot) ProcessMessage(message *tgbotapi.Message) {
 	// изменить последнее меню
 	menu.ChangeLastMenu()
 
-	// отправить ответное сообщение
-	b.Tg.Send(menu.GetReplyMessage())
+	if !player.IsMenuVisited {
+		menu = b.GetMenu(message, player)
+		// отправить ответное сообщение
+		b.Tg.Send(menu.GetFirstTimeMessage())
+		player.IsMenuVisited = true
+	} else {
+		// отправить ответное сообщение
+		b.Tg.Send(menu.GetReplyMessage())
+	}
+
+	// сохранить пользователя
+	b.Db.Save(&player)
 }
 
 func (b *EntoBot) GetPlayer(chatID int64) *entities.Player {

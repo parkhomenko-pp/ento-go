@@ -63,10 +63,6 @@ func (m *Menu) GetReplyMessage() *tgbotapi.MessageConfig {
 	return message
 }
 
-func (m *Menu) IsFirstTime() bool {
-	return m.Player.LastMenu != m.Menuable.GetName()
-}
-
 func (m *Menu) ChangeLastMenu() {
-	// TODO
+	m.Menuable.ChangeLastMenu()
 }

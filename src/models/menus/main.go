@@ -12,6 +12,10 @@ type Main struct {
 	Player  *entities.Player
 }
 
+func (m *Main) ChangeLastMenu() {
+	//TODO implement me
+}
+
 func (m *Main) GetFirstTimeMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(0, "Main1")
 	return &message
