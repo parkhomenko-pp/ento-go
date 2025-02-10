@@ -2,6 +2,7 @@ package menus
 
 import (
 	"ento-go/src/entities"
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"strings"
 )
@@ -40,11 +41,13 @@ func (r *Registration) DoAction() {
 	}
 	if strings.HasPrefix(r.Message.Text, "/") {
 		r.ReplyMessage = "Nickname can't start with '/'"
+		return
 	}
 	if strings.Contains(r.Message.Text, " ") {
 		r.ReplyMessage = "Nickname can't contain spaces."
 		return
 	}
+	fmt.Println(r.Message.Text)
 
 	r.Player.Nickname = r.Message.Text
 	r.NextMenu = MenuMain

@@ -2,6 +2,7 @@ package menus
 
 import (
 	"ento-go/src/entities"
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -17,7 +18,7 @@ func (m *Main) ChangeLastMenu() {
 }
 
 func (m *Main) GetFirstTimeMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(0, "Main1")
+	message := tgbotapi.NewMessage(0, fmt.Sprintf("Hello, %s! This is the main menu.", m.Player.Nickname))
 	return &message
 }
 
@@ -26,7 +27,7 @@ func (m *Main) GetName() string {
 }
 
 func (m *Main) GetReplyMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(0, "Main2")
+	message := tgbotapi.NewMessage(0, fmt.Sprintf("Hello, %s! This is the main menu.", m.Player.Nickname))
 	return &message
 }
 
