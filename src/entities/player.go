@@ -17,7 +17,7 @@ func (p Player) isNew() bool {
 func NewPlayer(chatID int64) *Player {
 	return &Player{
 		ChatID:        chatID,
-		LastMenu:      "",
+		LastMenu:      "registration",
 		IsMenuVisited: false,
 		Nickname:      "",
 		ThemeId:       0,

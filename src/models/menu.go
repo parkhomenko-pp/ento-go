@@ -12,6 +12,7 @@ type Menu struct {
 	Player  *entities.Player
 
 	menus.Menuable
+	returnMessage *tgbotapi.MessageConfig
 }
 
 func (m *Menu) String() string {
@@ -45,24 +46,32 @@ func (m *Menu) InitMenu() {
 }
 
 func (m *Menu) DoAction() {
-	if m.Player.LastMenu != m.Menuable.GetName() {
+	// если это первый раз, то отправить первое сообщение меню
+	if m.Player.IsMenuVisited == false {
+		m.Player.IsMenuVisited = true
+		m.returnMessage = m.Menuable.GetFirstTimeMessage()
 		return
 	}
+
 	m.Menuable.DoAction()
+
+	// если меню изменилось, то отправить первое сообщение из следующего меню
+	if m.Player.LastMenu != m.Menuable.GetName() {
+		m.InitMenu()
+		m.returnMessage = m.Menuable.GetFirstTimeMessage()
+		return
+	}
 }
 
-func (m *Menu) GetFirstTimeMessage() *tgbotapi.MessageConfig {
-	message := m.Menuable.GetFirstTimeMessage()
+func (m *Menu) GetMessage() *tgbotapi.MessageConfig {
+	var message *tgbotapi.MessageConfig
+
+	if m.returnMessage != nil {
+		message = m.returnMessage
+	} else {
+		message = m.Menuable.GetReplyMessage()
+	}
+
 	message.ChatID = m.Message.Chat.ID
 	return message
-}
-
-func (m *Menu) GetReplyMessage() *tgbotapi.MessageConfig {
-	message := m.Menuable.GetReplyMessage()
-	message.ChatID = m.Message.Chat.ID
-	return message
-}
-
-func (m *Menu) ChangeLastMenu() {
-	m.Menuable.ChangeLastMenu()
 }

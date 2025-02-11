@@ -7,5 +7,4 @@ type Menuable interface {
 	DoAction()
 	GetFirstTimeMessage() *tgbotapi.MessageConfig
 	GetReplyMessage() *tgbotapi.MessageConfig
-	ChangeLastMenu()
 }

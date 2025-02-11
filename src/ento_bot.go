@@ -6,7 +6,6 @@ import (
 	"errors"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
-	"log"
 	_ "time"
 )
 
@@ -36,41 +35,20 @@ func (b *EntoBot) ProcessMessage(message *tgbotapi.Message) {
 		return
 	}
 
-	// получить пользователя
+	// получить пользователя. если не найден, то создать нового в меню регистрации
 	player := b.GetPlayer(message.Chat.ID)
 
 	// определить меню в котором он находится
 	menu := b.GetMenu(message, player)
 
-	log.Println(menu)
-
-	// если это первый раз, то отправить первое сообщение меню
-	if player.IsMenuVisited == false {
-		b.Tg.Send(menu.GetFirstTimeMessage())
-		player.LastMenu = menu.GetName()
-		player.IsMenuVisited = true
-		b.Db.Save(&player)
-		return
-	}
-
 	// сделать действие
 	menu.DoAction()
 
-	// изменить последнее меню
-	menu.ChangeLastMenu()
-
-	if !player.IsMenuVisited {
-		menu = b.GetMenu(message, player)
-		// отправить ответное сообщение
-		b.Tg.Send(menu.GetFirstTimeMessage())
-		player.IsMenuVisited = true
-	} else {
-		// отправить ответное сообщение
-		b.Tg.Send(menu.GetReplyMessage())
-	}
+	// отправить сообщение из меню
+	b.Tg.Send(menu.GetMessage())
 
 	// сохранить пользователя
-	b.Db.Save(&player)
+	b.Db.Save(&player) // TODO: только если были изменения
 }
 
 func (b *EntoBot) GetPlayer(chatID int64) *entities.Player {

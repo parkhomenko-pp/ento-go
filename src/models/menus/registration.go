@@ -2,7 +2,6 @@ package menus
 
 import (
 	"ento-go/src/entities"
-	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"strings"
 )
@@ -14,7 +13,6 @@ type Registration struct {
 	Player  *entities.Player
 
 	ReplyMessage string
-	NextMenu     string
 }
 
 func (r *Registration) GetFirstTimeMessage() *tgbotapi.MessageConfig {
@@ -47,20 +45,12 @@ func (r *Registration) DoAction() {
 		r.ReplyMessage = "Nickname can't contain spaces."
 		return
 	}
-	fmt.Println(r.Message.Text)
 
 	r.Player.Nickname = r.Message.Text
-	r.NextMenu = MenuMain
+	r.Player.LastMenu = MenuMain
 }
 
 func (r *Registration) GetReplyMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(0, r.ReplyMessage)
 	return &message
-}
-
-func (r *Registration) ChangeLastMenu() {
-	if r.NextMenu != "" {
-		r.Player.LastMenu = r.NextMenu
-		r.Player.IsMenuVisited = false
-	}
 }

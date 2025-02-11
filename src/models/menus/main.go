@@ -13,10 +13,6 @@ type Main struct {
 	Player  *entities.Player
 }
 
-func (m *Main) ChangeLastMenu() {
-	//TODO implement me
-}
-
 func (m *Main) GetFirstTimeMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(0, fmt.Sprintf("Hello, %s! This is the main menu.", m.Player.Nickname))
 	return &message
