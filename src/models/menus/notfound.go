@@ -5,6 +5,10 @@ import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 type NotFound struct {
 }
 
+func (n *NotFound) CheckReply() bool {
+	return true
+}
+
 func (n *NotFound) GetFirstTimeMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(0, "Menu not found1")
 	return &message

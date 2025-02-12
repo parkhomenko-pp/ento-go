@@ -46,6 +46,15 @@ func (m *Menu) InitMenu() {
 }
 
 func (m *Menu) DoAction() {
+	// если ответ не тот, который ожидается, то отправить сообщение об ошибке
+	if m.Message.Text != "/menu" && !m.Menuable.CheckReply() {
+		message := m.Menuable.GetFirstTimeMessage()
+		message.Text = "Sorry, I don't understand you 😔\n\n" + message.Text
+
+		m.returnMessage = message
+		return
+	}
+
 	// если это первый раз, то отправить первое сообщение меню
 	if m.Player.IsMenuVisited == false {
 		m.Player.IsMenuVisited = true
@@ -66,7 +75,7 @@ func (m *Menu) DoAction() {
 func (m *Menu) GetMessage() *tgbotapi.MessageConfig {
 	var message *tgbotapi.MessageConfig
 
-	if m.returnMessage != nil {
+	if m.returnMessage != nil { // проверка вдруг это 1 сообщение @see DoAction
 		message = m.returnMessage
 	} else {
 		message = m.Menuable.GetReplyMessage()

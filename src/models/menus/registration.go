@@ -24,6 +24,13 @@ func (r *Registration) GetName() string {
 	return MenuRegistration
 }
 
+func (r *Registration) CheckReply() bool {
+	if r.Message.Text == "/menu" {
+		return false
+	}
+	return true
+}
+
 func (r *Registration) DoAction() {
 	if r.Message.Text == "" {
 		r.ReplyMessage = "Please, enter your nickname."

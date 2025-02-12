@@ -10,7 +10,7 @@ type Player struct {
 	WinsCount     int
 }
 
-func (p Player) isNew() bool {
+func (p *Player) isNew() bool {
 	return p.Nickname == ""
 }
 
@@ -24,4 +24,11 @@ func NewPlayer(chatID int64) *Player {
 		GamesCount:    0,
 		WinsCount:     0,
 	}
+}
+
+func (p *Player) GetWinRate() float64 {
+	if p.GamesCount == 0 {
+		return 0
+	}
+	return float64(p.WinsCount) / float64(p.GamesCount) * 100
 }
