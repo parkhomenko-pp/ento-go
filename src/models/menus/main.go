@@ -6,14 +6,14 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-const MenuMain = "main"
+const MenuNameMain = "main"
 
-type Main struct {
+type MenuMain struct {
 	Message *tgbotapi.Message
 	Player  *entities.Player
 }
 
-func (m *Main) CheckReply() bool {
+func (m *MenuMain) CheckReply() bool {
 	switch m.Message.Text {
 	case "New game":
 		return true
@@ -26,7 +26,7 @@ func (m *Main) CheckReply() bool {
 	}
 }
 
-func (m *Main) GetFirstTimeMessage() *tgbotapi.MessageConfig {
+func (m *MenuMain) GetFirstTimeMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(
 		0,
 		fmt.Sprintf(
@@ -47,11 +47,11 @@ func (m *Main) GetFirstTimeMessage() *tgbotapi.MessageConfig {
 	return &message
 }
 
-func (m *Main) GetName() string {
-	return MenuMain
+func (m *MenuMain) GetName() string {
+	return MenuNameMain
 }
 
-func (m *Main) GetReplyMessage() *tgbotapi.MessageConfig {
+func (m *MenuMain) GetReplyMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(
 		0,
 		fmt.Sprintf(
@@ -72,8 +72,8 @@ func (m *Main) GetReplyMessage() *tgbotapi.MessageConfig {
 	return &message
 }
 
-func (m *Main) DoAction() {
+func (m *MenuMain) DoAction() {
 	if m.Message.Text == "New game" {
-		m.Player.LastMenu = MenuNewGame
+		m.Player.LastMenu = MenuNameNewGame
 	}
 }

@@ -5,27 +5,27 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-const MenuNewGame = "new_game"
+const MenuNameNewGame = "new_game"
 
-type NewGame struct {
+type MenuNewGame struct {
 	Message *tgbotapi.Message
 	Player  *entities.Player
 
 	Opponent *entities.Player
 }
 
-func (n *NewGame) GetName() string {
-	return MenuNewGame
+func (m *MenuNewGame) GetName() string {
+	return MenuNameNewGame
 }
 
-func (n *NewGame) DoAction() {
-	if n.Message.Text == "Cancel" {
-		n.Player.ChangeMenu(MenuMain)
+func (m *MenuNewGame) DoAction() {
+	if m.Message.Text == "Cancel" {
+		m.Player.ChangeMenu(MenuNameMain)
 		return
 	}
 }
 
-func (n *NewGame) GetFirstTimeMessage() *tgbotapi.MessageConfig {
+func (m *MenuNewGame) GetFirstTimeMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(
 		0,
 		"Please, send me username or contact of your opponent to invite him to the game",
@@ -39,7 +39,7 @@ func (n *NewGame) GetFirstTimeMessage() *tgbotapi.MessageConfig {
 	return &message
 }
 
-func (n *NewGame) GetReplyMessage() *tgbotapi.MessageConfig {
+func (m *MenuNewGame) GetReplyMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(
 		0,
 		"new game reply message",
@@ -53,7 +53,7 @@ func (n *NewGame) GetReplyMessage() *tgbotapi.MessageConfig {
 	return &message
 }
 
-func (n *NewGame) CheckReply() bool {
+func (m *MenuNewGame) CheckReply() bool {
 	// Cancel -> true
 
 	// проверить что это контакт или юзернейм

@@ -34,17 +34,17 @@ func (m *Menu) String() string {
 
 func (m *Menu) InitMenu() {
 	switch m.Player.LastMenu {
-	case menus.MenuRegistration:
-		m.Menuable = &menus.Registration{Message: m.Message, Player: m.Player}
-	case menus.MenuMain:
-		m.Menuable = &menus.Main{Message: m.Message, Player: m.Player}
-	case menus.MenuNewGame:
-		m.Menuable = &menus.NewGame{Message: m.Message, Player: m.Player}
+	case menus.MenuNameRegistration:
+		m.Menuable = &menus.MenuRegistration{Message: m.Message, Player: m.Player}
+	case menus.MenuNameMain:
+		m.Menuable = &menus.MenuMain{Message: m.Message, Player: m.Player}
+	case menus.MenuNameNewGame:
+		m.Menuable = &menus.MenuNewGame{Message: m.Message, Player: m.Player}
 	default:
 		if m.Player.Nickname == "" {
-			m.Menuable = &menus.Registration{Message: m.Message, Player: m.Player}
+			m.Menuable = &menus.MenuRegistration{Message: m.Message, Player: m.Player}
 		} else {
-			m.Menuable = &menus.NotFound{}
+			m.Menuable = &menus.MenuNotFound{}
 		}
 	}
 }
