@@ -74,6 +74,6 @@ func (m *MenuMain) GetReplyMessage() *tgbotapi.MessageConfig {
 
 func (m *MenuMain) DoAction() {
 	if m.Message.Text == "New game" {
-		m.Player.LastMenu = MenuNameNewGame
+		m.Player.LastMenu = MenuNameMain
 	}
 }
