@@ -32,3 +32,8 @@ func (p *Player) GetWinRate() float64 {
 	}
 	return float64(p.WinsCount) / float64(p.GamesCount) * 100
 }
+
+func (p *Player) ChangeMenu(menu string) {
+	p.LastMenu = menu
+	p.IsMenuVisited = false
+}

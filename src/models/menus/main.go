@@ -73,5 +73,7 @@ func (m *Main) GetReplyMessage() *tgbotapi.MessageConfig {
 }
 
 func (m *Main) DoAction() {
-	//TODO implement me
+	if m.Message.Text == "New game" {
+		m.Player.LastMenu = MenuNewGame
+	}
 }

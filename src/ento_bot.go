@@ -68,6 +68,7 @@ func (b *EntoBot) GetMenu(message *tgbotapi.Message, player *entities.Player) *m
 	menu := new(models.Menu)
 	menu.Message = message
 	menu.Player = player
+	menu.Db = b.Db
 	menu.InitMenu()
 
 	return menu

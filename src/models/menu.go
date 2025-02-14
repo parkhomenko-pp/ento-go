@@ -5,11 +5,13 @@ import (
 	"ento-go/src/models/menus"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"gorm.io/gorm"
 )
 
 type Menu struct {
 	Message *tgbotapi.Message
 	Player  *entities.Player
+	Db      *gorm.DB
 
 	menus.Menuable
 	returnMessage *tgbotapi.MessageConfig
@@ -36,6 +38,8 @@ func (m *Menu) InitMenu() {
 		m.Menuable = &menus.Registration{Message: m.Message, Player: m.Player}
 	case menus.MenuMain:
 		m.Menuable = &menus.Main{Message: m.Message, Player: m.Player}
+	case menus.MenuNewGame:
+		m.Menuable = &menus.NewGame{Message: m.Message, Player: m.Player}
 	default:
 		if m.Player.Nickname == "" {
 			m.Menuable = &menus.Registration{Message: m.Message, Player: m.Player}
