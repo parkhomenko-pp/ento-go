@@ -43,7 +43,9 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
   - [ ] Full game support
 - Bot
   - [x] переименовать меню (Main -> MenuName, ...)
-  - [ ] починить MenuNewGame. сейчас не возвращатся в главное меню 
+  - [x] починить MenuNewGame. сейчас не возвращатся в главное меню 
+  - [ ] удалить is_menu_visited?
+  - [ ] удалить GetFirstTimeMessage?
   - [ ] заменить ```n.Player.LastMenu = MenuName``` -> ```n.Player.ChangeMenu(MenuName)```
   - ...
   - [ ] Full game support

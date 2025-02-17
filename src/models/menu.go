@@ -39,12 +39,12 @@ func (m *Menu) InitMenu() {
 	case menus.MenuNameMain:
 		m.Menuable = &menus.MenuMain{Message: m.Message, Player: m.Player}
 	case menus.MenuNameNewGame:
-		m.Menuable = &menus.MenuNewGame{Message: m.Message, Player: m.Player}
+		m.Menuable = &menus.MenuNewGame{Message: m.Message, Player: m.Player, Db: m.Db}
 	default:
 		if m.Player.Nickname == "" {
 			m.Menuable = &menus.MenuRegistration{Message: m.Message, Player: m.Player}
 		} else {
-			m.Menuable = &menus.MenuNotFound{}
+			m.Menuable = &menus.MenuNotFound{Message: m.Message, Player: m.Player}
 		}
 	}
 }
@@ -52,7 +52,7 @@ func (m *Menu) InitMenu() {
 func (m *Menu) DoAction() {
 	// если ответ не тот, который ожидается, то отправить сообщение об ошибке
 	if m.Message.Text != "/menu" && !m.Menuable.CheckReply() {
-		message := m.Menuable.GetFirstTimeMessage()
+		message := m.Menuable.GetReplyMessage()
 		message.Text = "Sorry, I don't understand you 😔\n\n" + message.Text
 
 		m.returnMessage = message
@@ -72,8 +72,9 @@ func (m *Menu) DoAction() {
 	if m.Player.LastMenu != m.Menuable.GetName() {
 		m.InitMenu()
 		m.returnMessage = m.Menuable.GetFirstTimeMessage()
-		return
 	}
+
+	m.Player.IsMenuVisited = true
 }
 
 func (m *Menu) GetMessage() *tgbotapi.MessageConfig {

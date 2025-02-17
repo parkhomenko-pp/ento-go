@@ -14,16 +14,13 @@ type MenuMain struct {
 }
 
 func (m *MenuMain) CheckReply() bool {
-	switch m.Message.Text {
-	case "New game":
-		return true
-	case "My games":
-		return true
-	case "Info":
-		return true
-	default:
-		return false
+	validReplies := []string{"New game", "My games", "Info"}
+	for _, reply := range validReplies {
+		if m.Message.Text == reply {
+			return true
+		}
 	}
+	return false
 }
 
 func (m *MenuMain) GetFirstTimeMessage() *tgbotapi.MessageConfig {
@@ -74,6 +71,6 @@ func (m *MenuMain) GetReplyMessage() *tgbotapi.MessageConfig {
 
 func (m *MenuMain) DoAction() {
 	if m.Message.Text == "New game" {
-		m.Player.LastMenu = MenuNameMain
+		m.Player.ChangeMenu(MenuNameNewGame)
 	}
 }

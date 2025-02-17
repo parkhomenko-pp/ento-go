@@ -1,8 +1,13 @@
 package menus
 
-import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+import (
+	"ento-go/src/entities"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+)
 
 type MenuNotFound struct {
+	Message *tgbotapi.Message
+	Player  *entities.Player
 }
 
 func (m *MenuNotFound) CheckReply() bool {
@@ -19,9 +24,11 @@ func (m *MenuNotFound) GetName() string {
 }
 
 func (m *MenuNotFound) DoAction() {
-	// TODO:
-	// 	1. change menu to main or registration
-	// 	2. send message to user from main or registration
+	if m.Player.Nickname == "" {
+		m.Player.ChangeMenu(MenuNameRegistration)
+	} else {
+		m.Player.ChangeMenu(MenuNameMain)
+	}
 }
 
 func (m *MenuNotFound) GetReplyMessage() *tgbotapi.MessageConfig {
