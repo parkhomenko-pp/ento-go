@@ -32,6 +32,12 @@ func (m *MenuRegistration) CheckReply() bool {
 }
 
 func (m *MenuRegistration) DoAction() {
+	if m.Player.LastMenu == "" {
+		m.Player.LastMenu = MenuNameRegistration
+		m.ReplyMessage = "Hello! Please, enter your nickname. It will be shown to other players"
+		return
+	}
+
 	if m.Message.Text == "" {
 		m.ReplyMessage = "Please, enter your nickname."
 		return

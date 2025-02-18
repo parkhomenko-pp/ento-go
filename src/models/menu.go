@@ -59,13 +59,6 @@ func (m *Menu) DoAction() {
 		return
 	}
 
-	// если это первый раз, то отправить первое сообщение меню
-	if m.Player.IsMenuVisited == false {
-		m.Player.IsMenuVisited = true
-		m.returnMessage = m.Menuable.GetFirstTimeMessage()
-		return
-	}
-
 	m.Menuable.DoAction()
 
 	// если меню изменилось, то отправить первое сообщение из следующего меню
@@ -73,8 +66,6 @@ func (m *Menu) DoAction() {
 		m.InitMenu()
 		m.returnMessage = m.Menuable.GetFirstTimeMessage()
 	}
-
-	m.Player.IsMenuVisited = true
 }
 
 func (m *Menu) GetMessage() *tgbotapi.MessageConfig {
