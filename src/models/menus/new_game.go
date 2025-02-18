@@ -14,8 +14,8 @@ type MenuNewGame struct {
 	Player  *entities.Player
 	Db      *gorm.DB
 
-	Opponent     *entities.Player
-	ReplyMessage string
+	ReplyMessage    string
+	OpponentMessage *tgbotapi.MessageConfig
 }
 
 func (m *MenuNewGame) GetName() string {
@@ -28,15 +28,44 @@ func (m *MenuNewGame) DoAction() {
 		return
 	}
 
-	if m.Opponent == nil {
-
+	if m.Message.Text == m.Player.Nickname {
+		m.ReplyMessage = "You can't play with yourself"
+		return
 	}
+
+	var opponent *entities.Player
+	result := m.Db.First(&opponent, "nickname = ?", m.Message.Text)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		m.ReplyMessage = "User not found"
+		return
+	}
+
+	var game *entities.Game
+	result = m.Db.First(&game, "player_chat_id = ? AND opponent_chat_id = ?", m.Player.ChatID, opponent.ChatID)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		game = &entities.Game{
+			PlayerChatId:   m.Player.ChatID,
+			OpponentChatId: opponent.ChatID,
+			Status:         entities.GameStatusWaitingForAccept,
+		}
+		m.Db.Create(&game)
+	}
+
+	// TODO: message to opponent
+	m.OpponentMessage = tgbotapi.NewMessage( // TODO: fix
+		opponent.ChatID,
+		"User "+m.Player.Nickname+" invited you to the game",
+	)
+
+	// TODO: change menu to waiting for accept
+	m.Player.ChangeMenu(MenuNameMain)
+
 }
 
 func (m *MenuNewGame) GetFirstTimeMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(
 		0,
-		"Please, send me Nickneme of your opponent to invite him to the game",
+		"Please, send me Nickname of your opponent to invite him to the game",
 	)
 	message.ReplyMarkup = tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButtonRow(
@@ -62,23 +91,9 @@ func (m *MenuNewGame) GetReplyMessage() *tgbotapi.MessageConfig {
 }
 
 func (m *MenuNewGame) CheckReply() bool {
-	if m.Message.Text == "Cancel" {
-		return true
-	}
+	return true
+}
 
-	if m.Message.Text == m.Player.Nickname {
-		m.ReplyMessage = "You can't play with yourself"
-		return false
-	}
-
-	var opponent *entities.Player
-
-	result := m.Db.First(&opponent, "nickname = ?", m.Message.Text)
-	if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		m.Opponent = opponent
-		return true
-	} else {
-		m.ReplyMessage = "User not found"
-		return false
-	}
+func (m *MenuNewGame) GetOpponentMessage() *tgbotapi.MessageConfig {
+	return m.OpponentMessage
 }

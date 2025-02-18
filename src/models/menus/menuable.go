@@ -8,4 +8,5 @@ type Menuable interface {
 	GetFirstTimeMessage() *tgbotapi.MessageConfig
 	GetReplyMessage() *tgbotapi.MessageConfig
 	CheckReply() bool
+	GetOpponentMessage() *tgbotapi.MessageConfig
 }

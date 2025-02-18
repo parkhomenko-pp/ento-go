@@ -74,3 +74,7 @@ func (m *MenuMain) DoAction() {
 		m.Player.ChangeMenu(MenuNameNewGame)
 	}
 }
+
+func (m *MenuMain) GetOpponentMessage() *tgbotapi.MessageConfig {
+	return nil
+}

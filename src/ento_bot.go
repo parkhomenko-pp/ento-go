@@ -47,6 +47,11 @@ func (b *EntoBot) ProcessMessage(message *tgbotapi.Message) {
 	// отправить сообщение из меню
 	b.Tg.Send(menu.GetMessage())
 
+	// отправить сообщение оппоненту
+	if opponentMessage := menu.GetOpponentMessage(); opponentMessage != nil {
+		b.Tg.Send(opponentMessage)
+	}
+
 	// сохранить пользователя
 	b.Db.Save(&player) // TODO: только если были изменения
 }

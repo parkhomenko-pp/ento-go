@@ -35,3 +35,7 @@ func (m *MenuNotFound) GetReplyMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(0, "Menu not found2")
 	return &message
 }
+
+func (m *MenuNotFound) GetOpponentMessage() *tgbotapi.MessageConfig {
+	return nil
+}

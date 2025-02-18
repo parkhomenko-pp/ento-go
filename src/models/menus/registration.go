@@ -67,3 +67,7 @@ func (m *MenuRegistration) GetReplyMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(0, m.ReplyMessage)
 	return &message
 }
+
+func (m *MenuRegistration) GetOpponentMessage() *tgbotapi.MessageConfig {
+	return nil
+}
