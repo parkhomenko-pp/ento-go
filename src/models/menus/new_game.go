@@ -52,14 +52,16 @@ func (m *MenuNewGame) DoAction() {
 	}
 
 	// TODO: message to opponent
-	m.OpponentMessage = tgbotapi.NewMessage( // TODO: fix
+	message := tgbotapi.NewMessage(
 		opponent.ChatID,
 		"User "+m.Player.Nickname+" invited you to the game",
 	)
+	m.OpponentMessage = &message
+
+	m.ReplyMessage = "Invitation sent"
 
 	// TODO: change menu to waiting for accept
 	m.Player.ChangeMenu(MenuNameMain)
-
 }
 
 func (m *MenuNewGame) GetFirstTimeMessage() *tgbotapi.MessageConfig {

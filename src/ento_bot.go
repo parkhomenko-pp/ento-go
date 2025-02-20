@@ -30,10 +30,10 @@ func (b *EntoBot) Start() {
 }
 
 func (b *EntoBot) ProcessMessage(message *tgbotapi.Message) {
-	if message.Chat.ID != b.AdminChatID { // TODO: remove after release
-		b.Tg.Send(tgbotapi.NewMessage(message.Chat.ID, "Sorry, but I can't talk with you 😔\nDeveloper is working on me"))
-		return
-	}
+	//if message.Chat.ID != b.AdminChatID { // TODO: remove after release
+	//	b.Tg.Send(tgbotapi.NewMessage(message.Chat.ID, "Sorry, but I can't talk with you 😔\nDeveloper is working on me"))
+	//	return
+	//}
 
 	// получить пользователя. если не найден, то создать нового в меню регистрации
 	player := b.GetPlayer(message.Chat.ID)
