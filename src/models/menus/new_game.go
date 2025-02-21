@@ -36,31 +36,36 @@ func (m *MenuNewGame) DoAction() {
 	var opponent *entities.Player
 	result := m.Db.First(&opponent, "nickname = ?", m.Message.Text)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		m.ReplyMessage = "User not found"
+		m.ReplyMessage = "User with	this nickname not found"
 		return
 	}
 
 	var game *entities.Game
-	result = m.Db.First(&game, "player_chat_id = ? AND opponent_chat_id = ?", m.Player.ChatID, opponent.ChatID)
+	result = m.Db.First(
+		&game,
+		"player_chat_id = ? AND opponent_chat_id = ? OR player_chat_id = ? AND opponent_chat_id = ?",
+		m.Player.ChatID, opponent.ChatID, opponent.ChatID, m.Player.ChatID,
+	)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		game = &entities.Game{
-			PlayerChatId:   m.Player.ChatID,
-			OpponentChatId: opponent.ChatID,
+			PlayerChatID:   m.Player.ChatID,
+			OpponentChatID: opponent.ChatID,
 			Status:         entities.GameStatusWaitingForAccept,
 		}
 		m.Db.Create(&game)
+
+		// TODO: message to opponent
+		message := tgbotapi.NewMessage(
+			opponent.ChatID,
+			"User "+m.Player.Nickname+" invited you to the game",
+		)
+		m.OpponentMessage = &message
+
+		m.ReplyMessage = "Invitation sent"
+	} else {
+		m.ReplyMessage = "You already have game with this user"
 	}
 
-	// TODO: message to opponent
-	message := tgbotapi.NewMessage(
-		opponent.ChatID,
-		"User "+m.Player.Nickname+" invited you to the game",
-	)
-	m.OpponentMessage = &message
-
-	m.ReplyMessage = "Invitation sent"
-
-	// TODO: change menu to waiting for accept
 	m.Player.ChangeMenu(MenuNameMain)
 }
 

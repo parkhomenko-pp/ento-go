@@ -6,7 +6,6 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlite"
-	_ "gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
 	"os"
@@ -53,7 +52,11 @@ func initBot() (entoBot *src.EntoBot) {
 		log.Fatal("Ошибка подключения к БД:", err)
 	}
 
-	if err := db.AutoMigrate(&entities.Player{}); err != nil {
+	// Миграция всех структур в папке entities
+	if err := db.AutoMigrate(
+		&entities.Player{},
+		&entities.Game{},
+	); err != nil {
 		log.Fatal("Ошибка миграции:", err)
 	}
 

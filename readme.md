@@ -48,6 +48,7 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
   - [ ] удалить GetFirstTimeMessage?
   - [x] заменить ```n.Player.LastMenu = MenuName``` -> ```n.Player.ChangeMenu(MenuName)```
   - [ ] настроить отправку сообщений оппоненту
+    - не хочет отправлять ответное сообщение
   - ...
   - [ ] Full game support
 

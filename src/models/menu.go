@@ -80,3 +80,11 @@ func (m *Menu) GetMessage() *tgbotapi.MessageConfig {
 	message.ChatID = m.Message.Chat.ID
 	return message
 }
+
+func (m *Menu) GetOpponentMessage() *tgbotapi.MessageConfig {
+	message := m.Menuable.GetOpponentMessage()
+	if message != nil {
+		message.ChatID = m.Message.Chat.ID
+	}
+	return message
+}

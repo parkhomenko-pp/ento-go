@@ -52,6 +52,10 @@ func (b *EntoBot) ProcessMessage(message *tgbotapi.Message) {
 		b.Tg.Send(opponentMessage)
 	}
 
+	// TODO: сменить меню
+
+	// TODO: отправить сообщение из нового меню
+
 	// сохранить пользователя
 	b.Db.Save(&player) // TODO: только если были изменения
 }
