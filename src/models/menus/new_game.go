@@ -56,7 +56,7 @@ func (m *MenuNewGame) DoAction() {
 
 		newOpponentMessage := tgbotapi.NewMessage(
 			opponent.ChatID,
-			"User "+m.Player.Nickname+" invited you to the game",
+			"User "+m.Player.Nickname+" invited you to a game",
 		)
 		m.OpponentMessage = &newOpponentMessage
 
