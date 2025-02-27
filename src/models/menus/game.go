@@ -8,8 +8,7 @@ type MenuGame struct {
 }
 
 func (m MenuGame) GetName() string {
-	//TODO implement me
-	panic("implement me")
+	return MenuNameGame
 }
 
 func (m MenuGame) DoAction() {

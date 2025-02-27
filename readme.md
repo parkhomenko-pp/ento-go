@@ -47,8 +47,8 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
   - [x] удалить is_menu_visited?
   - [ ] удалить GetFirstTimeMessage?
   - [x] заменить ```n.Player.LastMenu = MenuName``` -> ```n.Player.ChangeMenu(MenuName)```
-  - [ ] настроить отправку сообщений оппоненту
-    - не хочет отправлять ответное сообщение
+  - [x] настроить отправку сообщений оппоненту
+  - [ ] добавить меню "мои игры"
   - ...
   - [ ] Full game support
 

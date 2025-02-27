@@ -14,7 +14,8 @@ type Menu struct {
 	Db      *gorm.DB
 
 	menus.Menuable
-	returnMessage *tgbotapi.MessageConfig
+	returnMessage   *tgbotapi.MessageConfig
+	opponentMessage *tgbotapi.MessageConfig
 }
 
 func (m *Menu) String() string {
@@ -60,11 +61,16 @@ func (m *Menu) DoAction() {
 	}
 
 	m.Menuable.DoAction()
+	m.opponentMessage = m.Menuable.GetOpponentMessage()
 
 	// если меню изменилось, то отправить первое сообщение из следующего меню
 	if m.Player.LastMenu != m.Menuable.GetName() {
+		replyMessage := m.Menuable.GetReplyMessage()
 		m.InitMenu()
 		m.returnMessage = m.Menuable.GetFirstTimeMessage()
+		if replyMessage != nil {
+			m.returnMessage.Text = replyMessage.Text + "\n\n" + m.returnMessage.Text
+		}
 	}
 }
 
@@ -82,9 +88,5 @@ func (m *Menu) GetMessage() *tgbotapi.MessageConfig {
 }
 
 func (m *Menu) GetOpponentMessage() *tgbotapi.MessageConfig {
-	message := m.Menuable.GetOpponentMessage()
-	if message != nil {
-		message.ChatID = m.Message.Chat.ID
-	}
-	return message
+	return m.opponentMessage
 }

@@ -6,6 +6,7 @@ import (
 	"errors"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
+	"log"
 	_ "time"
 )
 
@@ -44,17 +45,14 @@ func (b *EntoBot) ProcessMessage(message *tgbotapi.Message) {
 	// сделать действие
 	menu.DoAction()
 
-	// отправить сообщение из меню
+	// отправить ответное сообщение
 	b.Tg.Send(menu.GetMessage())
 
-	// отправить сообщение оппоненту
+	// отправить ответное сообщение оппоненту
+	log.Println(menu.GetOpponentMessage())
 	if opponentMessage := menu.GetOpponentMessage(); opponentMessage != nil {
 		b.Tg.Send(opponentMessage)
 	}
-
-	// TODO: сменить меню
-
-	// TODO: отправить сообщение из нового меню
 
 	// сохранить пользователя
 	b.Db.Save(&player) // TODO: только если были изменения

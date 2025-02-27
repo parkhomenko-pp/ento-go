@@ -54,12 +54,11 @@ func (m *MenuNewGame) DoAction() {
 		}
 		m.Db.Create(&game)
 
-		// TODO: message to opponent
-		message := tgbotapi.NewMessage(
+		newOpponentMessage := tgbotapi.NewMessage(
 			opponent.ChatID,
 			"User "+m.Player.Nickname+" invited you to the game",
 		)
-		m.OpponentMessage = &message
+		m.OpponentMessage = &newOpponentMessage
 
 		m.ReplyMessage = "Invitation sent"
 	} else {
