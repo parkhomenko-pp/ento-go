@@ -42,14 +42,15 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
   - [ ] ✏️TODO
   - [ ] Full game support
 - Bot
-  - [x] переименовать меню (Main -> MenuName, ...)
-  - [x] починить MenuNewGame. сейчас не возвращатся в главное меню 
-  - [x] удалить is_menu_visited?
-  - [ ] удалить GetFirstTimeMessage?
-  - [x] заменить ```n.Player.LastMenu = MenuName``` -> ```n.Player.ChangeMenu(MenuName)```
-  - [x] настроить отправку сообщений оппоненту
-  - [ ] добавить меню "мои игры"
+  - [x] rename menus (Main -> MenuName, ...)
+  - [x] fix MenuNewGame. now it does not return to the main menu
+  - [x] delete is_menu_visited?
+  - [ ] delete GetFirstTimeMessage?
+  - [x] replace ```n.Player.LastMenu = MenuName``` -> ```n.Player.ChangeMenu(MenuName)```
+  - [x] set up sending messages to the opponent
+  - [ ] add "my games" menu
   - ...
+  - [ ] написать какую-то обертку для меню, что бы в менюшках не прописывать переходы 
   - [ ] Full game support
 
 ## Credits

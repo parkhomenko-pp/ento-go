@@ -41,6 +41,8 @@ func (m *Menu) InitMenu() {
 		m.Menuable = &menus.MenuMain{Message: m.Message, Player: m.Player}
 	case menus.MenuNameNewGame:
 		m.Menuable = &menus.MenuNewGame{Message: m.Message, Player: m.Player, Db: m.Db}
+	case menus.MenuNameMyGames:
+		m.Menuable = menus.NewMenuMyGames(m.Message, m.Player, m.Db)
 	default:
 		if m.Player.Nickname == "" {
 			m.Menuable = &menus.MenuRegistration{Message: m.Message, Player: m.Player}

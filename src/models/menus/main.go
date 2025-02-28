@@ -70,8 +70,13 @@ func (m *MenuMain) GetReplyMessage() *tgbotapi.MessageConfig {
 }
 
 func (m *MenuMain) DoAction() {
-	if m.Message.Text == "New game" {
+	switch m.Message.Text {
+	case "New game":
 		m.Player.ChangeMenu(MenuNameNewGame)
+		return
+	case "My games":
+		m.Player.ChangeMenu(MenuNameMyGames)
+		return
 	}
 }
 
