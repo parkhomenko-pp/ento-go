@@ -13,14 +13,18 @@ type MenuMain struct {
 	Player  *entities.Player
 }
 
-func (m *MenuMain) CheckReply() bool {
-	validReplies := []string{"New game", "My games", "Info"}
-	for _, reply := range validReplies {
-		if m.Message.Text == reply {
-			return true
-		}
-	}
-	return false
+func (m *MenuMain) GetName() string {
+	return MenuNameMain
+}
+
+var menuMainNavigation = map[string]string{
+	"New game": MenuNameNewGame,
+	"My games": MenuNameMyGames,
+	//"Info":     MenuNameInfo, // Assuming you have an Info menu
+}
+
+func (m *MenuMain) GetNavigation() map[string]string {
+	return menuMainNavigation
 }
 
 func (m *MenuMain) GetFirstTimeMessage() *tgbotapi.MessageConfig {
@@ -42,10 +46,6 @@ func (m *MenuMain) GetFirstTimeMessage() *tgbotapi.MessageConfig {
 		),
 	)
 	return &message
-}
-
-func (m *MenuMain) GetName() string {
-	return MenuNameMain
 }
 
 func (m *MenuMain) GetReplyMessage() *tgbotapi.MessageConfig {
@@ -70,14 +70,7 @@ func (m *MenuMain) GetReplyMessage() *tgbotapi.MessageConfig {
 }
 
 func (m *MenuMain) DoAction() {
-	switch m.Message.Text {
-	case "New game":
-		m.Player.ChangeMenu(MenuNameNewGame)
-		return
-	case "My games":
-		m.Player.ChangeMenu(MenuNameMyGames)
-		return
-	}
+
 }
 
 func (m *MenuMain) GetOpponentMessage() *tgbotapi.MessageConfig {

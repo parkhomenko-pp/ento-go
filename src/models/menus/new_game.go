@@ -18,6 +18,12 @@ type MenuNewGame struct {
 	OpponentMessage *tgbotapi.MessageConfig
 }
 
+func (m *MenuNewGame) GetNavigation() map[string]string {
+	return map[string]string{
+		"< Back": MenuNameMain,
+	}
+}
+
 func (m *MenuNewGame) GetName() string {
 	return MenuNameNewGame
 }

@@ -17,6 +17,12 @@ type MenuMyGames struct {
 	Games []*entities.Game
 }
 
+func (m MenuMyGames) GetNavigation() map[string]string {
+	return map[string]string{
+		"< Back": MenuNameMain,
+	}
+}
+
 func NewMenuMyGames(message *tgbotapi.Message, player *entities.Player, db *gorm.DB) *MenuMyGames {
 	menu := MenuMyGames{
 		Message: message,

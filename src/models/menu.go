@@ -53,16 +53,11 @@ func (m *Menu) InitMenu() {
 }
 
 func (m *Menu) DoAction() {
-	// если ответ не тот, который ожидается, то отправить сообщение об ошибке
-	if m.Message.Text != "/menu" && !m.Menuable.CheckReply() {
-		message := m.Menuable.GetReplyMessage()
-		message.Text = "Sorry, I don't understand you 😔\n\n" + message.Text
-
-		m.returnMessage = message
-		return
+	//TODO: навигация
+	if !m.NavigateToMenu() {
+		m.Menuable.DoAction()
 	}
 
-	m.Menuable.DoAction()
 	m.opponentMessage = m.Menuable.GetOpponentMessage()
 
 	// если меню изменилось, то отправить первое сообщение из следующего меню
@@ -91,4 +86,13 @@ func (m *Menu) GetMessage() *tgbotapi.MessageConfig {
 
 func (m *Menu) GetOpponentMessage() *tgbotapi.MessageConfig {
 	return m.opponentMessage
+}
+
+func (m *Menu) NavigateToMenu() bool {
+	navigation := m.Menuable.GetNavigation()
+	if nextMenu, exists := navigation[m.Message.Text]; exists {
+		m.Player.ChangeMenu(nextMenu)
+		return true
+	}
+	return false
 }

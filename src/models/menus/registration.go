@@ -15,6 +15,10 @@ type MenuRegistration struct {
 	ReplyMessage string
 }
 
+func (m *MenuRegistration) GetNavigation() map[string]string {
+	return nil
+}
+
 func (m *MenuRegistration) GetFirstTimeMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(0, "Hello! Please, enter your nickname. It will be shown to other players.")
 	return &message
