@@ -83,10 +83,10 @@ func (m *MenuNewGame) GetFirstTimeMessage() *tgbotapi.MessageConfig {
 }
 
 func (m *MenuNewGame) GetReplyMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(
-		0,
-		m.ReplyMessage,
-	)
+	if m.ReplyMessage == "" {
+		return m.GetFirstTimeMessage()
+	}
+	message := tgbotapi.NewMessage(0, m.ReplyMessage)
 	return &message
 }
 

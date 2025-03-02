@@ -25,8 +25,8 @@ func (m MenuNewGameAcceptWaiting) GetFirstTimeMessage() *tgbotapi.MessageConfig 
 }
 
 func (m MenuNewGameAcceptWaiting) GetReplyMessage() *tgbotapi.MessageConfig {
-	//TODO implement me
-	panic("implement me")
+	// Assuming the first time message is the reply message for this menu
+	return m.GetFirstTimeMessage()
 }
 
 func (m MenuNewGameAcceptWaiting) CheckReply() bool {

@@ -3,6 +3,7 @@ package models
 import (
 	"ento-go/src/entities"
 	"ento-go/src/models/menus"
+	"ento-go/src/models/menus/interfaces"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
@@ -13,7 +14,7 @@ type Menu struct {
 	Player  *entities.Player
 	Db      *gorm.DB
 
-	menus.Menuable
+	interfaces.Menuable
 	returnMessage   *tgbotapi.MessageConfig
 	opponentMessage *tgbotapi.MessageConfig
 }
@@ -64,7 +65,7 @@ func (m *Menu) DoAction() {
 	if m.Player.LastMenu != m.Menuable.GetName() {
 		replyMessage := m.Menuable.GetReplyMessage()
 		m.InitMenu()
-		m.returnMessage = m.Menuable.GetFirstTimeMessage()
+		m.returnMessage = m.Menuable.GetReplyMessage()
 		if replyMessage != nil {
 			m.returnMessage.Text = replyMessage.Text + "\n\n" + m.returnMessage.Text
 		}

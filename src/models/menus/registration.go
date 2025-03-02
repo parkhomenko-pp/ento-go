@@ -68,6 +68,9 @@ func (m *MenuRegistration) DoAction() {
 }
 
 func (m *MenuRegistration) GetReplyMessage() *tgbotapi.MessageConfig {
+	if m.ReplyMessage == "" {
+		return m.GetFirstTimeMessage()
+	}
 	message := tgbotapi.NewMessage(0, m.ReplyMessage)
 	return &message
 }
