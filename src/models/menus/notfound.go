@@ -10,6 +10,11 @@ type MenuNotFound struct {
 	Player  *entities.Player
 }
 
+func (m *MenuNotFound) GetNavigation() map[string]string {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (m *MenuNotFound) CheckReply() bool {
 	return true
 }

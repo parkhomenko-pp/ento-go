@@ -80,6 +80,21 @@ func (m *Menu) GetMessage() *tgbotapi.MessageConfig {
 		message = m.Menuable.GetReplyMessage()
 	}
 
+	// get navigation buttons
+	navigationButtons := []tgbotapi.KeyboardButton{}
+	navigation := m.Menuable.GetNavigation()
+	if len(navigation) > 0 {
+		for buttonText := range navigation {
+			navigationButtons = append(navigationButtons, tgbotapi.NewKeyboardButton(buttonText))
+		}
+		message.ReplyMarkup = tgbotapi.NewReplyKeyboard(
+			tgbotapi.NewKeyboardButtonRow(navigationButtons...),
+		)
+	} else {
+		message.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
+	}
+
+	// set chat id
 	message.ChatID = m.Message.Chat.ID
 	return message
 }

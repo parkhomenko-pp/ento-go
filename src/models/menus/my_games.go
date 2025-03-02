@@ -53,12 +53,6 @@ func (m MenuMyGames) GetFirstTimeMessage() *tgbotapi.MessageConfig {
 		0,
 		fmt.Sprintf("You have %d games", len(m.Games)),
 	)
-	message.ReplyMarkup = tgbotapi.NewReplyKeyboard(
-		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("< Back"),
-		),
-	)
-
 	return &message
 }
 

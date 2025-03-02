@@ -28,24 +28,7 @@ func (m *MenuMain) GetNavigation() map[string]string {
 }
 
 func (m *MenuMain) GetFirstTimeMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(
-		0,
-		fmt.Sprintf(
-			"Hello, %s! This is the main menu.\nGames played: %d\nWins: %d (Win rate: %.2f%%)",
-			m.Player.Nickname,
-			m.Player.GamesCount,
-			m.Player.WinsCount,
-			m.Player.GetWinRate(),
-		),
-	)
-	message.ReplyMarkup = tgbotapi.NewReplyKeyboard(
-		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("New game"),
-			tgbotapi.NewKeyboardButton("My games"),
-			tgbotapi.NewKeyboardButton("Info"),
-		),
-	)
-	return &message
+	return m.GetReplyMessage()
 }
 
 func (m *MenuMain) GetReplyMessage() *tgbotapi.MessageConfig {
@@ -57,13 +40,6 @@ func (m *MenuMain) GetReplyMessage() *tgbotapi.MessageConfig {
 			m.Player.GamesCount,
 			m.Player.WinsCount,
 			m.Player.GetWinRate(),
-		),
-	)
-	message.ReplyMarkup = tgbotapi.NewReplyKeyboard(
-		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("New game"),
-			tgbotapi.NewKeyboardButton("My games"),
-			tgbotapi.NewKeyboardButton("Info"),
 		),
 	)
 	return &message

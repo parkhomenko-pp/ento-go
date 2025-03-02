@@ -79,12 +79,6 @@ func (m *MenuNewGame) GetFirstTimeMessage() *tgbotapi.MessageConfig {
 		0,
 		"Please, send me Nickname of your opponent to invite him to the game",
 	)
-	message.ReplyMarkup = tgbotapi.NewReplyKeyboard(
-		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("Cancel"),
-		),
-	)
-
 	return &message
 }
 
@@ -93,12 +87,6 @@ func (m *MenuNewGame) GetReplyMessage() *tgbotapi.MessageConfig {
 		0,
 		m.ReplyMessage,
 	)
-	message.ReplyMarkup = tgbotapi.NewReplyKeyboard(
-		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("Cancel"),
-		),
-	)
-
 	return &message
 }
 
