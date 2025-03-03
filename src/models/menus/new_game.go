@@ -70,15 +70,10 @@ func (m *MenuNewGame) DoAction() {
 }
 
 func (m *MenuNewGame) GetReplyText() string {
-	message := ""
-
 	if m.ReplyMessage == "" {
-		message = "Please, send me Nickname of your opponent to invite him to the game"
-	} else {
-		message = m.ReplyMessage
+		return "Please, send me Nickname of your opponent to invite him to the game"
 	}
-
-	return message
+	return m.ReplyMessage
 }
 
 func (m *MenuNewGame) CheckReply() bool {

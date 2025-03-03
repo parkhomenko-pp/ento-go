@@ -40,7 +40,7 @@ func (b *EntoBot) ProcessMessage(message *tgbotapi.Message) {
 	menu.DoAction()
 
 	// отправить ответное сообщение
-	b.Tg.Send(menu.GetMessage())
+	b.Tg.Send(menu.GetReplyMessage())
 
 	// отправить ответное сообщение оппоненту
 	if opponentMessage := menu.GetOpponentMessage(); opponentMessage != nil {
