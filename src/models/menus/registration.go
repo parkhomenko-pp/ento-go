@@ -62,7 +62,7 @@ func (m *MenuRegistration) DoAction() {
 	m.Player.LastMenu = MenuNameMain
 }
 
-func (m *MenuRegistration) GetReplyMessage() *tgbotapi.MessageConfig {
+func (m *MenuRegistration) GetReplyText() string {
 	message := ""
 
 	if m.ReplyMessage == "" {
@@ -71,8 +71,7 @@ func (m *MenuRegistration) GetReplyMessage() *tgbotapi.MessageConfig {
 		message = m.ReplyMessage
 	}
 
-	returnMessage := tgbotapi.NewMessage(0, message)
-	return &returnMessage
+	return message
 }
 
 func (m *MenuRegistration) GetOpponentMessage() *tgbotapi.MessageConfig {

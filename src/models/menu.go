@@ -15,7 +15,7 @@ type Menu struct {
 	Db      *gorm.DB
 
 	interfaces.Menuable
-	returnMessage   *tgbotapi.MessageConfig
+	returnText      string
 	opponentMessage *tgbotapi.MessageConfig
 }
 
@@ -65,17 +65,18 @@ func (m *Menu) DoAction() {
 	if m.Player.LastMenu != m.Menuable.GetName() {
 		// TODO: NEW GAME return message to player
 		m.InitMenu()
-		m.returnMessage = m.Menuable.GetReplyMessage()
+		m.returnText = m.Menuable.GetReplyText()
 	}
 }
 
 func (m *Menu) GetMessage() *tgbotapi.MessageConfig {
-	var message *tgbotapi.MessageConfig
+	message := tgbotapi.NewMessage(m.Message.Chat.ID, "")
 
-	if m.returnMessage != nil { // проверка вдруг это 1 сообщение @see DoAction
-		message = m.returnMessage
+	// fill message text
+	if m.returnText == "" { // проверка вдруг это 1 сообщение @see DoAction
+		message.Text = m.returnText
 	} else {
-		message = m.Menuable.GetReplyMessage()
+		message.Text = m.Menuable.GetReplyText()
 	}
 
 	// get navigation buttons
@@ -94,10 +95,11 @@ func (m *Menu) GetMessage() *tgbotapi.MessageConfig {
 
 	// set chat id
 	message.ChatID = m.Message.Chat.ID
-	return message
+	return &message
 }
 
 func (m *Menu) GetOpponentMessage() *tgbotapi.MessageConfig {
+
 	return m.opponentMessage
 }
 

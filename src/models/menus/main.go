@@ -26,18 +26,14 @@ func (m *MenuMain) GetNavigation() map[string]string {
 	return menuMainNavigation
 }
 
-func (m *MenuMain) GetReplyMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(
-		0,
-		fmt.Sprintf(
-			"%s, this is the main menu.\n\nGames played: %d\nWins: %d (Win rate: %.2f%%)",
-			m.Player.Nickname,
-			m.Player.GamesCount,
-			m.Player.WinsCount,
-			m.Player.GetWinRate(),
-		),
+func (m *MenuMain) GetReplyText() string {
+	return fmt.Sprintf(
+		"%s, this is the main menu.\n\nGames played: %d\nWins: %d (Win rate: %.2f%%)",
+		m.Player.Nickname,
+		m.Player.GamesCount,
+		m.Player.WinsCount,
+		m.Player.GetWinRate(),
 	)
-	return &message
 }
 
 func (m *MenuMain) DoAction() {

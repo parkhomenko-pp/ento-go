@@ -69,7 +69,7 @@ func (m *MenuNewGame) DoAction() {
 	m.Player.ChangeMenu(MenuNameMain)
 }
 
-func (m *MenuNewGame) GetReplyMessage() *tgbotapi.MessageConfig {
+func (m *MenuNewGame) GetReplyText() string {
 	message := ""
 
 	if m.ReplyMessage == "" {
@@ -78,8 +78,7 @@ func (m *MenuNewGame) GetReplyMessage() *tgbotapi.MessageConfig {
 		message = m.ReplyMessage
 	}
 
-	returnMessage := tgbotapi.NewMessage(0, message)
-	return &returnMessage
+	return message
 }
 
 func (m *MenuNewGame) CheckReply() bool {

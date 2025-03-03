@@ -31,9 +31,8 @@ func (m *MenuNotFound) DoAction() {
 	}
 }
 
-func (m *MenuNotFound) GetReplyMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(0, "Menu not found")
-	return &message
+func (m *MenuNotFound) GetReplyText() string {
+	return "Menu not found"
 }
 
 func (m *MenuNotFound) GetOpponentMessage() *tgbotapi.MessageConfig {

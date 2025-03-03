@@ -48,7 +48,7 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
   - [x] delete GetFirstTimeMessage?
   - [x] replace ```n.Player.LastMenu = MenuName``` -> ```n.Player.ChangeMenu(MenuName)```
   - [x] set up sending messages to the opponent
-  - [ ] refactor navigation
+  - [x] refactor navigation
   - [x] fix message concatenation
   - [ ] return only string from menu (GetReplyMessage)
   - [ ] REGISTRATION: check unique username

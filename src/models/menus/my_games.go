@@ -43,12 +43,8 @@ func (m MenuMyGames) GetName() string {
 
 func (m MenuMyGames) DoAction() {}
 
-func (m MenuMyGames) GetReplyMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(
-		0,
-		fmt.Sprintf("You have %d games", len(m.Games)),
-	)
-	return &message
+func (m MenuMyGames) GetReplyText() string {
+	return fmt.Sprintf("You have %d games", len(m.Games))
 }
 
 func (m MenuMyGames) CheckReply() bool {
