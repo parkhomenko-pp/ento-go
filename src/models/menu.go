@@ -63,6 +63,7 @@ func (m *Menu) DoAction() {
 
 	// если меню изменилось, то отправить первое сообщение из следующего меню
 	if m.Player.LastMenu != m.Menuable.GetName() {
+		// TODO: NEW GAME return message to player
 		m.InitMenu()
 		m.returnMessage = m.Menuable.GetReplyMessage()
 	}
