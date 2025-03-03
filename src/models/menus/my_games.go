@@ -41,23 +41,14 @@ func (m MenuMyGames) GetName() string {
 	return MenuNameMyGames
 }
 
-func (m MenuMyGames) DoAction() {
-	if m.Message.Text == "< Back" {
-		m.Player.ChangeMenu(MenuNameMain)
-		return
-	}
-}
+func (m MenuMyGames) DoAction() {}
 
-func (m MenuMyGames) GetFirstTimeMessage() *tgbotapi.MessageConfig {
+func (m MenuMyGames) GetReplyMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(
 		0,
 		fmt.Sprintf("You have %d games", len(m.Games)),
 	)
 	return &message
-}
-
-func (m MenuMyGames) GetReplyMessage() *tgbotapi.MessageConfig {
-	return m.GetFirstTimeMessage()
 }
 
 func (m MenuMyGames) CheckReply() bool {

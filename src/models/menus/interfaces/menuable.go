@@ -6,7 +6,6 @@ type Menuable interface {
 	GetName() string
 	GetNavigation() map[string]string
 	DoAction()
-	GetFirstTimeMessage() *tgbotapi.MessageConfig
 	GetReplyMessage() *tgbotapi.MessageConfig
 	GetOpponentMessage() *tgbotapi.MessageConfig
 }

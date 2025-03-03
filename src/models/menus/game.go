@@ -16,11 +16,6 @@ func (m MenuGame) DoAction() {
 	panic("implement me")
 }
 
-func (m MenuGame) GetFirstTimeMessage() *tgbotapi.MessageConfig {
-	//TODO implement me
-	panic("implement me")
-}
-
 func (m MenuGame) GetReplyMessage() *tgbotapi.MessageConfig {
 	//TODO implement me
 	panic("implement me")

@@ -29,11 +29,6 @@ func (m *MenuNewGame) GetName() string {
 }
 
 func (m *MenuNewGame) DoAction() {
-	if m.Message.Text == "Cancel" {
-		m.Player.ChangeMenu(MenuNameMain)
-		return
-	}
-
 	if m.Message.Text == m.Player.Nickname {
 		m.ReplyMessage = "You can't play with yourself"
 		return
@@ -74,20 +69,17 @@ func (m *MenuNewGame) DoAction() {
 	m.Player.ChangeMenu(MenuNameMain)
 }
 
-func (m *MenuNewGame) GetFirstTimeMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(
-		0,
-		"Please, send me Nickname of your opponent to invite him to the game",
-	)
-	return &message
-}
-
 func (m *MenuNewGame) GetReplyMessage() *tgbotapi.MessageConfig {
+	message := ""
+
 	if m.ReplyMessage == "" {
-		return m.GetFirstTimeMessage()
+		message = "Please, send me Nickname of your opponent to invite him to the game"
+	} else {
+		message = m.ReplyMessage
 	}
-	message := tgbotapi.NewMessage(0, m.ReplyMessage)
-	return &message
+
+	returnMessage := tgbotapi.NewMessage(0, message)
+	return &returnMessage
 }
 
 func (m *MenuNewGame) CheckReply() bool {

@@ -45,11 +45,13 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
   - [x] rename menus (Main -> MenuName, ...)
   - [x] fix MenuNewGame. now it does not return to the main menu
   - [x] delete is_menu_visited?
-  - [ ] delete GetFirstTimeMessage?
+  - [x] delete GetFirstTimeMessage?
   - [x] replace ```n.Player.LastMenu = MenuName``` -> ```n.Player.ChangeMenu(MenuName)```
   - [x] set up sending messages to the opponent
   - [ ] refactor navigation
   - [x] fix message concatenation
+  - [ ] return only string from menu (GetReplyMessage)
+  - [ ] REGISTRATION: check unique username
   - [ ] add "my games" menu
   - ...
   - [ ] написать какую-то обертку для меню, что бы в менюшках не прописывать переходы 

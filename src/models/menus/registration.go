@@ -19,11 +19,6 @@ func (m *MenuRegistration) GetNavigation() map[string]string {
 	return nil
 }
 
-func (m *MenuRegistration) GetFirstTimeMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(0, "Hello! Please, enter your nickname. It will be shown to other players.")
-	return &message
-}
-
 func (m *MenuRegistration) GetName() string {
 	return MenuNameRegistration
 }
@@ -68,11 +63,16 @@ func (m *MenuRegistration) DoAction() {
 }
 
 func (m *MenuRegistration) GetReplyMessage() *tgbotapi.MessageConfig {
+	message := ""
+
 	if m.ReplyMessage == "" {
-		return m.GetFirstTimeMessage()
+		message = "Hello! Please, enter your nickname. It will be shown to other players."
+	} else {
+		message = m.ReplyMessage
 	}
-	message := tgbotapi.NewMessage(0, m.ReplyMessage)
-	return &message
+
+	returnMessage := tgbotapi.NewMessage(0, message)
+	return &returnMessage
 }
 
 func (m *MenuRegistration) GetOpponentMessage() *tgbotapi.MessageConfig {

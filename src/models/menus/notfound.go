@@ -19,11 +19,6 @@ func (m *MenuNotFound) CheckReply() bool {
 	return true
 }
 
-func (m *MenuNotFound) GetFirstTimeMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(0, "Menu not found1")
-	return &message
-}
-
 func (m *MenuNotFound) GetName() string {
 	return "not_found"
 }
@@ -37,7 +32,7 @@ func (m *MenuNotFound) DoAction() {
 }
 
 func (m *MenuNotFound) GetReplyMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(0, "Menu not found2")
+	message := tgbotapi.NewMessage(0, "Menu not found")
 	return &message
 }
 

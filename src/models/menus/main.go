@@ -20,15 +20,10 @@ func (m *MenuMain) GetName() string {
 var menuMainNavigation = map[string]string{
 	"New game": MenuNameNewGame,
 	"My games": MenuNameMyGames,
-	//"Info":     MenuNameInfo, // Assuming you have an Info menu
 }
 
 func (m *MenuMain) GetNavigation() map[string]string {
 	return menuMainNavigation
-}
-
-func (m *MenuMain) GetFirstTimeMessage() *tgbotapi.MessageConfig {
-	return m.GetReplyMessage()
 }
 
 func (m *MenuMain) GetReplyMessage() *tgbotapi.MessageConfig {
