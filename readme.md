@@ -49,7 +49,7 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
   - [x] replace ```n.Player.LastMenu = MenuName``` -> ```n.Player.ChangeMenu(MenuName)```
   - [x] set up sending messages to the opponent
   - [ ] refactor navigation
-  - [ ] fix message concatenation
+  - [x] fix message concatenation
   - [ ] add "my games" menu
   - ...
   - [ ] написать какую-то обертку для меню, что бы в менюшках не прописывать переходы 

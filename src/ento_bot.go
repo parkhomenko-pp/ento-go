@@ -6,7 +6,6 @@ import (
 	"errors"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
-	"log"
 	_ "time"
 )
 
@@ -31,11 +30,6 @@ func (b *EntoBot) Start() {
 }
 
 func (b *EntoBot) ProcessMessage(message *tgbotapi.Message) {
-	//if message.Chat.ID != b.AdminChatID { // TODO: remove after release
-	//	b.Tg.Send(tgbotapi.NewMessage(message.Chat.ID, "Sorry, but I can't talk with you 😔\nDeveloper is working on me"))
-	//	return
-	//}
-
 	// получить пользователя. если не найден, то создать нового в меню регистрации
 	player := b.GetPlayer(message.Chat.ID)
 
@@ -49,7 +43,6 @@ func (b *EntoBot) ProcessMessage(message *tgbotapi.Message) {
 	b.Tg.Send(menu.GetMessage())
 
 	// отправить ответное сообщение оппоненту
-	log.Println(menu.GetOpponentMessage())
 	if opponentMessage := menu.GetOpponentMessage(); opponentMessage != nil {
 		b.Tg.Send(opponentMessage)
 	}

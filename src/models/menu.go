@@ -63,12 +63,8 @@ func (m *Menu) DoAction() {
 
 	// если меню изменилось, то отправить первое сообщение из следующего меню
 	if m.Player.LastMenu != m.Menuable.GetName() {
-		replyMessage := m.Menuable.GetReplyMessage()
 		m.InitMenu()
 		m.returnMessage = m.Menuable.GetReplyMessage()
-		if replyMessage != nil {
-			m.returnMessage.Text = replyMessage.Text + "\n\n" + m.returnMessage.Text
-		}
 	}
 }
 
