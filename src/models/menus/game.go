@@ -7,6 +7,21 @@ const MenuNameGame = "game"
 type MenuGame struct {
 }
 
+func (m MenuGame) GetNavigation() map[string]string {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (m MenuGame) GetReplyText() string {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (m MenuGame) IsConcatReply() bool {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (m MenuGame) GetName() string {
 	return MenuNameGame
 }

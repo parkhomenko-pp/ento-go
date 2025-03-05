@@ -8,4 +8,5 @@ type Menuable interface {
 	DoAction()
 	GetReplyText() string
 	GetOpponentMessage() *tgbotapi.MessageConfig
+	IsConcatReply() bool
 }

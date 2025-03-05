@@ -10,6 +10,10 @@ type MenuNotFound struct {
 	Player  *entities.Player
 }
 
+func (m *MenuNotFound) IsConcatReply() bool {
+	return false
+}
+
 func (m *MenuNotFound) GetNavigation() map[string]string {
 	//TODO implement me
 	panic("implement me")

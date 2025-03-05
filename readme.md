@@ -47,6 +47,7 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
   - [x] refactor navigation
   - [x] fix message concatenation
   - [x] return only string from menu (GetReplyMessage)
+  - [ ] fix menus sorting
   - [ ] REGISTRATION: check unique username
   - [ ] add "my games" menu
   - ...

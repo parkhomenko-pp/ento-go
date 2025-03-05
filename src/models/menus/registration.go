@@ -15,6 +15,10 @@ type MenuRegistration struct {
 	ReplyMessage string
 }
 
+func (m *MenuRegistration) IsConcatReply() bool {
+	return false
+}
+
 func (m *MenuRegistration) GetNavigation() map[string]string {
 	return nil
 }

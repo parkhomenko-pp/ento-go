@@ -39,7 +39,7 @@ func (b *EntoBot) ProcessMessage(message *tgbotapi.Message) {
 	// сделать действие
 	menu.DoAction()
 
-	// отправить ответное сообщение
+	// отправить ответное сообщение текущему пользователю
 	b.Tg.Send(menu.GetReplyMessage())
 
 	// отправить ответное сообщение оппоненту

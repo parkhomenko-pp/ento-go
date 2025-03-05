@@ -17,6 +17,10 @@ type MenuMyGames struct {
 	Games []*entities.Game
 }
 
+func (m MenuMyGames) IsConcatReply() bool {
+	return false
+}
+
 func (m MenuMyGames) GetNavigation() map[string]string {
 	return map[string]string{
 		"< Back": MenuNameMain,

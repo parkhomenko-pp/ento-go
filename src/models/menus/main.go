@@ -13,6 +13,10 @@ type MenuMain struct {
 	Player  *entities.Player
 }
 
+func (m *MenuMain) IsConcatReply() bool {
+	return false
+}
+
 func (m *MenuMain) GetName() string {
 	return MenuNameMain
 }

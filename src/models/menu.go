@@ -7,6 +7,7 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
+	"log"
 )
 
 type Menu struct {
@@ -63,17 +64,22 @@ func (m *Menu) DoAction() {
 
 	// если меню изменилось, то отправить первое сообщение из следующего меню
 	if m.Player.LastMenu != m.Menuable.GetName() {
-		// TODO: NEW GAME return message to player
+		oldMenuConcat := m.Menuable.IsConcatReply()
+		oldMessageText := m.Menuable.GetReplyText()
 		m.InitMenu()
 		m.replyText = m.Menuable.GetReplyText()
+		if oldMenuConcat {
+			m.replyText = oldMessageText + "\n\n----\n" + m.replyText
+		}
 	}
 }
 
 func (m *Menu) GetReplyMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(m.Message.Chat.ID, "")
 
+	log.Println("m.reply: " + m.replyText)
 	// fill message text
-	if m.replyText == "" { // проверка вдруг это 1 сообщение @see DoAction
+	if m.replyText != "" { // проверка вдруг это 1 сообщение @see DoAction
 		message.Text = m.replyText
 	} else {
 		message.Text = m.Menuable.GetReplyText()

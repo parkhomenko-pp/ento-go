@@ -3,8 +3,10 @@ package menus
 import (
 	"ento-go/src/entities"
 	"errors"
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
+	"log"
 )
 
 const MenuNameNewGame = "new_game"
@@ -14,8 +16,14 @@ type MenuNewGame struct {
 	Player  *entities.Player
 	Db      *gorm.DB
 
-	ReplyMessage    string
+	ReplyText       string
 	OpponentMessage *tgbotapi.MessageConfig
+
+	concat bool
+}
+
+func (m *MenuNewGame) IsConcatReply() bool {
+	return m.concat
 }
 
 func (m *MenuNewGame) GetNavigation() map[string]string {
@@ -30,14 +38,14 @@ func (m *MenuNewGame) GetName() string {
 
 func (m *MenuNewGame) DoAction() {
 	if m.Message.Text == m.Player.Nickname {
-		m.ReplyMessage = "You can't play with yourself"
+		m.ReplyText = "You can't play with yourself"
 		return
 	}
 
 	var opponent *entities.Player
 	result := m.Db.First(&opponent, "nickname = ?", m.Message.Text)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		m.ReplyMessage = "User with	this nickname not found"
+		m.ReplyText = "User with	this nickname not found"
 		return
 	}
 
@@ -61,19 +69,22 @@ func (m *MenuNewGame) DoAction() {
 		)
 		m.OpponentMessage = &newOpponentMessage
 
-		m.ReplyMessage = "Invitation sent"
+		m.ReplyText = "Invitation sent"
 	} else {
-		m.ReplyMessage = "You already have game with this user"
+		m.ReplyText = "You already have game with this user"
+		return
 	}
 
+	m.concat = true
+	log.Println("concat changed: " + fmt.Sprint(m.concat))
 	m.Player.ChangeMenu(MenuNameMain)
 }
 
 func (m *MenuNewGame) GetReplyText() string {
-	if m.ReplyMessage == "" {
+	if m.ReplyText == "" {
 		return "Please, send me Nickname of your opponent to invite him to the game"
 	}
-	return m.ReplyMessage
+	return m.ReplyText
 }
 
 func (m *MenuNewGame) CheckReply() bool {
