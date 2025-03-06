@@ -43,15 +43,11 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
   - [ ] Full game support
 - Bot
   - ...
-  - [x] set up sending messages to the opponent
-  - [x] refactor navigation
-  - [x] fix message concatenation
   - [x] return only string from menu (GetReplyMessage)
   - [x] fix menus sorting
   - [x] REGISTRATION: check unique username
   - [ ] add "my games" menu
   - ...
-  - [ ] написать какую-то обертку для меню, что бы в менюшках не прописывать переходы 
   - [ ] Full game support
 
 ## Credits
