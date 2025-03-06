@@ -39,7 +39,7 @@ func (m *Menu) String() string {
 func (m *Menu) InitMenu() {
 	switch m.Player.LastMenu {
 	case menus.MenuNameRegistration:
-		m.Menuable = &menus.MenuRegistration{Message: m.Message, Player: m.Player}
+		m.Menuable = &menus.MenuRegistration{Message: m.Message, Player: m.Player, Db: m.Db}
 	case menus.MenuNameMain:
 		m.Menuable = &menus.MenuMain{Message: m.Message, Player: m.Player}
 	case menus.MenuNameNewGame:

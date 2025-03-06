@@ -3,7 +3,9 @@ package menus
 import (
 	"ento-go/src/entities"
 	"ento-go/src/models/types"
+	"errors"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"gorm.io/gorm"
 	"strings"
 )
 
@@ -12,6 +14,7 @@ const MenuNameRegistration = "registration"
 type MenuRegistration struct {
 	Message *tgbotapi.Message
 	Player  *entities.Player
+	Db      *gorm.DB
 
 	ReplyMessage string
 }
@@ -60,6 +63,11 @@ func (m *MenuRegistration) DoAction() {
 	}
 	if strings.Contains(m.Message.Text, " ") {
 		m.ReplyMessage = "Nickname can't contain spaces."
+		return
+	}
+	result := m.Db.First(&entities.Player{}, "nickname = ?", m.Message.Text)
+	if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		m.ReplyMessage = "This nickname is already taken. Please, enter another one."
 		return
 	}
 

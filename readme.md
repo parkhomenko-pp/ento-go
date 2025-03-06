@@ -48,7 +48,7 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
   - [x] fix message concatenation
   - [x] return only string from menu (GetReplyMessage)
   - [x] fix menus sorting
-  - [ ] REGISTRATION: check unique username
+  - [x] REGISTRATION: check unique username
   - [ ] add "my games" menu
   - ...
   - [ ] написать какую-то обертку для меню, что бы в менюшках не прописывать переходы 
