@@ -2,6 +2,7 @@ package menus
 
 import (
 	"ento-go/src/entities"
+	"ento-go/src/models/types"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -13,71 +14,33 @@ type MenuMain struct {
 	Player  *entities.Player
 }
 
-func (m *MenuMain) CheckReply() bool {
-	validReplies := []string{"New game", "My games", "Info"}
-	for _, reply := range validReplies {
-		if m.Message.Text == reply {
-			return true
-		}
+func (m *MenuMain) GetNavigation() []types.KeyboardButton {
+	return []types.KeyboardButton{
+		{Text: "New game", Destination: MenuNameNewGame},
+		{Text: "My games", Destination: MenuNameMyGames},
 	}
-	return false
 }
 
-func (m *MenuMain) GetFirstTimeMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(
-		0,
-		fmt.Sprintf(
-			"Hello, %s! This is the main menu.\nGames played: %d\nWins: %d (Win rate: %.2f%%)",
-			m.Player.Nickname,
-			m.Player.GamesCount,
-			m.Player.WinsCount,
-			m.Player.GetWinRate(),
-		),
-	)
-	message.ReplyMarkup = tgbotapi.NewReplyKeyboard(
-		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("New game"),
-			tgbotapi.NewKeyboardButton("My games"),
-			tgbotapi.NewKeyboardButton("Info"),
-		),
-	)
-	return &message
+func (m *MenuMain) IsConcatReply() bool {
+	return false
 }
 
 func (m *MenuMain) GetName() string {
 	return MenuNameMain
 }
 
-func (m *MenuMain) GetReplyMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(
-		0,
-		fmt.Sprintf(
-			"%s, this is the main menu.\n\nGames played: %d\nWins: %d (Win rate: %.2f%%)",
-			m.Player.Nickname,
-			m.Player.GamesCount,
-			m.Player.WinsCount,
-			m.Player.GetWinRate(),
-		),
+func (m *MenuMain) GetReplyText() string {
+	return fmt.Sprintf(
+		"%s, this is the main menu.\n\nGames played: %d\nWins: %d (Win rate: %.2f%%)",
+		m.Player.Nickname,
+		m.Player.GamesCount,
+		m.Player.WinsCount,
+		m.Player.GetWinRate(),
 	)
-	message.ReplyMarkup = tgbotapi.NewReplyKeyboard(
-		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("New game"),
-			tgbotapi.NewKeyboardButton("My games"),
-			tgbotapi.NewKeyboardButton("Info"),
-		),
-	)
-	return &message
 }
 
 func (m *MenuMain) DoAction() {
-	switch m.Message.Text {
-	case "New game":
-		m.Player.ChangeMenu(MenuNameNewGame)
-		return
-	case "My games":
-		m.Player.ChangeMenu(MenuNameMyGames)
-		return
-	}
+
 }
 
 func (m *MenuMain) GetOpponentMessage() *tgbotapi.MessageConfig {

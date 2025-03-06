@@ -2,6 +2,7 @@ package menus
 
 import (
 	"ento-go/src/entities"
+	"ento-go/src/models/types"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -10,13 +11,17 @@ type MenuNotFound struct {
 	Player  *entities.Player
 }
 
-func (m *MenuNotFound) CheckReply() bool {
-	return true
+func (m *MenuNotFound) GetNavigation() []types.KeyboardButton {
+	//TODO implement me
+	panic("implement me")
 }
 
-func (m *MenuNotFound) GetFirstTimeMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(0, "Menu not found1")
-	return &message
+func (m *MenuNotFound) IsConcatReply() bool {
+	return false
+}
+
+func (m *MenuNotFound) CheckReply() bool {
+	return true
 }
 
 func (m *MenuNotFound) GetName() string {
@@ -31,9 +36,8 @@ func (m *MenuNotFound) DoAction() {
 	}
 }
 
-func (m *MenuNotFound) GetReplyMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(0, "Menu not found2")
-	return &message
+func (m *MenuNotFound) GetReplyText() string {
+	return "Menu not found"
 }
 
 func (m *MenuNotFound) GetOpponentMessage() *tgbotapi.MessageConfig {

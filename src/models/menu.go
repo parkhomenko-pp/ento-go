@@ -3,9 +3,11 @@ package models
 import (
 	"ento-go/src/entities"
 	"ento-go/src/models/menus"
+	"ento-go/src/models/menus/interfaces"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
+	"log"
 )
 
 type Menu struct {
@@ -13,9 +15,10 @@ type Menu struct {
 	Player  *entities.Player
 	Db      *gorm.DB
 
-	menus.Menuable
-	returnMessage   *tgbotapi.MessageConfig
-	opponentMessage *tgbotapi.MessageConfig
+	interfaces.Menuable
+
+	replyText            string
+	replyOpponentMessage *tgbotapi.MessageConfig
 }
 
 func (m *Menu) String() string {
@@ -36,7 +39,7 @@ func (m *Menu) String() string {
 func (m *Menu) InitMenu() {
 	switch m.Player.LastMenu {
 	case menus.MenuNameRegistration:
-		m.Menuable = &menus.MenuRegistration{Message: m.Message, Player: m.Player}
+		m.Menuable = &menus.MenuRegistration{Message: m.Message, Player: m.Player, Db: m.Db}
 	case menus.MenuNameMain:
 		m.Menuable = &menus.MenuMain{Message: m.Message, Player: m.Player}
 	case menus.MenuNameNewGame:
@@ -53,42 +56,65 @@ func (m *Menu) InitMenu() {
 }
 
 func (m *Menu) DoAction() {
-	// если ответ не тот, который ожидается, то отправить сообщение об ошибке
-	if m.Message.Text != "/menu" && !m.Menuable.CheckReply() {
-		message := m.Menuable.GetReplyMessage()
-		message.Text = "Sorry, I don't understand you 😔\n\n" + message.Text
-
-		m.returnMessage = message
-		return
+	if !m.NavigateToMenu() {
+		m.Menuable.DoAction()
 	}
 
-	m.Menuable.DoAction()
-	m.opponentMessage = m.Menuable.GetOpponentMessage()
+	m.replyOpponentMessage = m.Menuable.GetOpponentMessage()
 
 	// если меню изменилось, то отправить первое сообщение из следующего меню
 	if m.Player.LastMenu != m.Menuable.GetName() {
-		replyMessage := m.Menuable.GetReplyMessage()
+		oldMenuConcat := m.Menuable.IsConcatReply()
+		oldMessageText := m.Menuable.GetReplyText()
 		m.InitMenu()
-		m.returnMessage = m.Menuable.GetFirstTimeMessage()
-		if replyMessage != nil {
-			m.returnMessage.Text = replyMessage.Text + "\n\n" + m.returnMessage.Text
+		m.replyText = m.Menuable.GetReplyText()
+		if oldMenuConcat {
+			m.replyText = oldMessageText + "\n\n----\n" + m.replyText
 		}
 	}
 }
 
-func (m *Menu) GetMessage() *tgbotapi.MessageConfig {
-	var message *tgbotapi.MessageConfig
+func (m *Menu) GetReplyMessage() *tgbotapi.MessageConfig {
+	message := tgbotapi.NewMessage(m.Message.Chat.ID, "")
 
-	if m.returnMessage != nil { // проверка вдруг это 1 сообщение @see DoAction
-		message = m.returnMessage
+	log.Println("m.reply: " + m.replyText)
+	// fill message text
+	if m.replyText != "" { // проверка вдруг это 1 сообщение @see DoAction
+		message.Text = m.replyText
 	} else {
-		message = m.Menuable.GetReplyMessage()
+		message.Text = m.Menuable.GetReplyText()
 	}
 
+	// get navigation buttons
+	navigationButtons := []tgbotapi.KeyboardButton{}
+	navigation := m.Menuable.GetNavigation()
+	if len(navigation) > 0 {
+		for _, keyboardButton := range navigation {
+			navigationButtons = append(navigationButtons, tgbotapi.NewKeyboardButton(keyboardButton.Text))
+		}
+		message.ReplyMarkup = tgbotapi.NewReplyKeyboard(
+			tgbotapi.NewKeyboardButtonRow(navigationButtons...),
+		)
+	} else {
+		message.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
+	}
+
+	// set chat id
 	message.ChatID = m.Message.Chat.ID
-	return message
+	return &message
 }
 
 func (m *Menu) GetOpponentMessage() *tgbotapi.MessageConfig {
-	return m.opponentMessage
+	return m.replyOpponentMessage
+}
+
+func (m *Menu) NavigateToMenu() bool {
+	navigation := m.Menuable.GetNavigation()
+	for _, button := range navigation {
+		if button.Text == m.Message.Text {
+			m.Player.ChangeMenu(button.Destination)
+			return true
+		}
+	}
+	return false
 }

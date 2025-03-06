@@ -2,6 +2,7 @@ package menus
 
 import (
 	"ento-go/src/entities"
+	"ento-go/src/models/types"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
@@ -15,6 +16,16 @@ type MenuMyGames struct {
 	Db      *gorm.DB
 
 	Games []*entities.Game
+}
+
+func (m MenuMyGames) GetNavigation() []types.KeyboardButton {
+	return []types.KeyboardButton{
+		{Text: "< Back", Destination: MenuNameMain},
+	}
+}
+
+func (m MenuMyGames) IsConcatReply() bool {
+	return false
 }
 
 func NewMenuMyGames(message *tgbotapi.Message, player *entities.Player, db *gorm.DB) *MenuMyGames {
@@ -35,29 +46,10 @@ func (m MenuMyGames) GetName() string {
 	return MenuNameMyGames
 }
 
-func (m MenuMyGames) DoAction() {
-	if m.Message.Text == "< Back" {
-		m.Player.ChangeMenu(MenuNameMain)
-		return
-	}
-}
+func (m MenuMyGames) DoAction() {}
 
-func (m MenuMyGames) GetFirstTimeMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(
-		0,
-		fmt.Sprintf("You have %d games", len(m.Games)),
-	)
-	message.ReplyMarkup = tgbotapi.NewReplyKeyboard(
-		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton("< Back"),
-		),
-	)
-
-	return &message
-}
-
-func (m MenuMyGames) GetReplyMessage() *tgbotapi.MessageConfig {
-	return m.GetFirstTimeMessage()
+func (m MenuMyGames) GetReplyText() string {
+	return fmt.Sprintf("You have %d games", len(m.Games))
 }
 
 func (m MenuMyGames) CheckReply() bool {

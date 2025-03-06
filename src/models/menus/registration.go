@@ -2,7 +2,10 @@ package menus
 
 import (
 	"ento-go/src/entities"
+	"ento-go/src/models/types"
+	"errors"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"gorm.io/gorm"
 	"strings"
 )
 
@@ -11,13 +14,17 @@ const MenuNameRegistration = "registration"
 type MenuRegistration struct {
 	Message *tgbotapi.Message
 	Player  *entities.Player
+	Db      *gorm.DB
 
 	ReplyMessage string
 }
 
-func (m *MenuRegistration) GetFirstTimeMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(0, "Hello! Please, enter your nickname. It will be shown to other players.")
-	return &message
+func (m *MenuRegistration) GetNavigation() []types.KeyboardButton {
+	return nil
+}
+
+func (m *MenuRegistration) IsConcatReply() bool {
+	return false
 }
 
 func (m *MenuRegistration) GetName() string {
@@ -58,14 +65,26 @@ func (m *MenuRegistration) DoAction() {
 		m.ReplyMessage = "Nickname can't contain spaces."
 		return
 	}
+	result := m.Db.First(&entities.Player{}, "nickname = ?", m.Message.Text)
+	if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		m.ReplyMessage = "This nickname is already taken. Please, enter another one."
+		return
+	}
 
 	m.Player.Nickname = m.Message.Text
 	m.Player.LastMenu = MenuNameMain
 }
 
-func (m *MenuRegistration) GetReplyMessage() *tgbotapi.MessageConfig {
-	message := tgbotapi.NewMessage(0, m.ReplyMessage)
-	return &message
+func (m *MenuRegistration) GetReplyText() string {
+	message := ""
+
+	if m.ReplyMessage == "" {
+		message = "Hello! Please, enter your nickname. It will be shown to other players."
+	} else {
+		message = m.ReplyMessage
+	}
+
+	return message
 }
 
 func (m *MenuRegistration) GetOpponentMessage() *tgbotapi.MessageConfig {
