@@ -2,6 +2,7 @@ package menus
 
 import (
 	"ento-go/src/entities"
+	"ento-go/src/models/types"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -13,21 +14,19 @@ type MenuMain struct {
 	Player  *entities.Player
 }
 
+func (m *MenuMain) GetNavigation() []types.KeyboardButton {
+	return []types.KeyboardButton{
+		{Text: "New game", Destination: MenuNameNewGame},
+		{Text: "My games", Destination: MenuNameMyGames},
+	}
+}
+
 func (m *MenuMain) IsConcatReply() bool {
 	return false
 }
 
 func (m *MenuMain) GetName() string {
 	return MenuNameMain
-}
-
-var menuMainNavigation = map[string]string{
-	"New game": MenuNameNewGame,
-	"My games": MenuNameMyGames,
-}
-
-func (m *MenuMain) GetNavigation() map[string]string {
-	return menuMainNavigation
 }
 
 func (m *MenuMain) GetReplyText() string {

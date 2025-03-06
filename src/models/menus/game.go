@@ -1,13 +1,16 @@
 package menus
 
-import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+import (
+	"ento-go/src/models/types"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+)
 
 const MenuNameGame = "game"
 
 type MenuGame struct {
 }
 
-func (m MenuGame) GetNavigation() map[string]string {
+func (m MenuGame) GetNavigation() []types.KeyboardButton {
 	//TODO implement me
 	panic("implement me")
 }

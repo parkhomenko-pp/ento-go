@@ -2,6 +2,7 @@ package menus
 
 import (
 	"ento-go/src/entities"
+	"ento-go/src/models/types"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -10,13 +11,13 @@ type MenuNotFound struct {
 	Player  *entities.Player
 }
 
-func (m *MenuNotFound) IsConcatReply() bool {
-	return false
-}
-
-func (m *MenuNotFound) GetNavigation() map[string]string {
+func (m *MenuNotFound) GetNavigation() []types.KeyboardButton {
 	//TODO implement me
 	panic("implement me")
+}
+
+func (m *MenuNotFound) IsConcatReply() bool {
+	return false
 }
 
 func (m *MenuNotFound) CheckReply() bool {

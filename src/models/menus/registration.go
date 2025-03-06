@@ -2,6 +2,7 @@ package menus
 
 import (
 	"ento-go/src/entities"
+	"ento-go/src/models/types"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"strings"
 )
@@ -15,12 +16,12 @@ type MenuRegistration struct {
 	ReplyMessage string
 }
 
-func (m *MenuRegistration) IsConcatReply() bool {
-	return false
+func (m *MenuRegistration) GetNavigation() []types.KeyboardButton {
+	return nil
 }
 
-func (m *MenuRegistration) GetNavigation() map[string]string {
-	return nil
+func (m *MenuRegistration) IsConcatReply() bool {
+	return false
 }
 
 func (m *MenuRegistration) GetName() string {

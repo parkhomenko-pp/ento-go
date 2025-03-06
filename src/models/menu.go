@@ -89,8 +89,8 @@ func (m *Menu) GetReplyMessage() *tgbotapi.MessageConfig {
 	navigationButtons := []tgbotapi.KeyboardButton{}
 	navigation := m.Menuable.GetNavigation()
 	if len(navigation) > 0 {
-		for buttonText := range navigation {
-			navigationButtons = append(navigationButtons, tgbotapi.NewKeyboardButton(buttonText))
+		for _, keyboardButton := range navigation {
+			navigationButtons = append(navigationButtons, tgbotapi.NewKeyboardButton(keyboardButton.Text))
 		}
 		message.ReplyMarkup = tgbotapi.NewReplyKeyboard(
 			tgbotapi.NewKeyboardButtonRow(navigationButtons...),
@@ -110,9 +110,11 @@ func (m *Menu) GetOpponentMessage() *tgbotapi.MessageConfig {
 
 func (m *Menu) NavigateToMenu() bool {
 	navigation := m.Menuable.GetNavigation()
-	if nextMenu, exists := navigation[m.Message.Text]; exists {
-		m.Player.ChangeMenu(nextMenu)
-		return true
+	for _, button := range navigation {
+		if button.Text == m.Message.Text {
+			m.Player.ChangeMenu(button.Destination)
+			return true
+		}
 	}
 	return false
 }
