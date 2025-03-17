@@ -35,10 +35,7 @@ func NewMenuMyGames(message *tgbotapi.Message, player *entities.Player, db *gorm
 		Db:      db,
 	}
 
-	if err := menu.Db.Where("player_id = ? OR opponent_id = ?", menu.Player.ChatID, menu.Player.ChatID).Find(&menu.Games).Error; err != nil {
-		menu.Games = []*entities.Game{}
-	}
-
+	menu.Db.Where("player_chat_id = ? OR opponent_chat_id = ?", menu.Player.ChatID, menu.Player.ChatID).Find(&menu.Games)
 	return &menu
 }
 
@@ -49,7 +46,13 @@ func (m MenuMyGames) GetName() string {
 func (m MenuMyGames) DoAction() {}
 
 func (m MenuMyGames) GetReplyText() string {
-	return fmt.Sprintf("You have %d games", len(m.Games))
+	replyMessage := fmt.Sprintf("You have %d game(s)\n\n", len(m.Games))
+
+	replyMessage = concatGamesByStatus(m.Games, entities.GameStatusWaitingForAccept, "Invites", replyMessage)
+	replyMessage = concatGamesByStatus(m.Games, entities.GameStatusPlaying, "Playing", replyMessage)
+	replyMessage = concatGamesByStatus(m.Games, entities.GameStatusFinished, "Finished", replyMessage)
+
+	return replyMessage
 }
 
 func (m MenuMyGames) CheckReply() bool {
@@ -62,4 +65,21 @@ func (m MenuMyGames) CheckReply() bool {
 
 func (m MenuMyGames) GetOpponentMessage() *tgbotapi.MessageConfig {
 	return nil
+}
+
+func concatGamesByStatus(games []*entities.Game, status int8, label string, replyMessage string) string {
+	filtered := []*entities.Game{}
+	for _, game := range games {
+		if game.Status == status {
+			filtered = append(filtered, game)
+		}
+	}
+	if len(filtered) > 0 {
+		replyMessage += label + ":\n"
+		for _, game := range filtered {
+			replyMessage += fmt.Sprintf("/g_%d - \n", game.ID) // TODO: добавить никнеймы игроков
+		}
+		replyMessage += "\n"
+	}
+	return replyMessage
 }

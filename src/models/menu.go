@@ -7,7 +7,6 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
-	"log"
 )
 
 type Menu struct {
@@ -77,7 +76,6 @@ func (m *Menu) DoAction() {
 func (m *Menu) GetReplyMessage() *tgbotapi.MessageConfig {
 	message := tgbotapi.NewMessage(m.Message.Chat.ID, "")
 
-	log.Println("m.reply: " + m.replyText)
 	// fill message text
 	if m.replyText != "" { // проверка вдруг это 1 сообщение @see DoAction
 		message.Text = m.replyText

@@ -4,10 +4,8 @@ import (
 	"ento-go/src/entities"
 	"ento-go/src/models/types"
 	"errors"
-	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
-	"log"
 )
 
 const MenuNameNewGame = "new_game"
@@ -77,7 +75,6 @@ func (m *MenuNewGame) DoAction() {
 	}
 
 	m.concat = true
-	log.Println("concat changed: " + fmt.Sprint(m.concat))
 	m.Player.ChangeMenu(MenuNameMain)
 }
 
