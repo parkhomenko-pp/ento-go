@@ -34,3 +34,8 @@ func (p *Player) GetWinRate() float64 {
 func (p *Player) ChangeMenu(menu string) {
 	p.LastMenu = menu
 }
+
+func (p *Player) ChangeMenuWithAdditional(menu string, additional string) {
+	menu = menu + ":" + additional
+	p.ChangeMenu(menu)
+}

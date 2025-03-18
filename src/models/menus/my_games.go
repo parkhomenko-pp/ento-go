@@ -6,6 +6,8 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
+	"strconv"
+	"strings"
 )
 
 const MenuNameMyGames = "my-games"
@@ -17,6 +19,8 @@ type MenuMyGames struct {
 
 	Games          []*entities.Game
 	UsersNicknames map[int64]string
+
+	ReplyText string
 }
 
 func (m MenuMyGames) GetNavigation() []types.KeyboardButton {
@@ -49,9 +53,29 @@ func (m MenuMyGames) GetName() string {
 	return MenuNameMyGames
 }
 
-func (m MenuMyGames) DoAction() {}
+func (m MenuMyGames) DoAction() {
+	gameIDStr := strings.TrimPrefix(m.Message.Text, "/g_")
+	gameID, err := strconv.Atoi(gameIDStr)
+	if err != nil {
+		m.ReplyText = "Invalid game ID"
+		return
+	}
+
+	for _, game := range m.Games {
+		if game.ID == uint(gameID) {
+			m.Player.ChangeMenuWithAdditional(MenuNameGame, strconv.Itoa(gameID))
+			return
+		}
+	}
+
+	m.ReplyText = "Game not found"
+}
 
 func (m MenuMyGames) GetReplyText() string {
+	if m.ReplyText != "" {
+		return m.ReplyText
+	}
+
 	replyMessage := fmt.Sprintf("You have %d game(s)\n\n", len(m.Games))
 
 	replyMessage = m.concatGamesByStatus(entities.GameStatusWaitingForAccept, "Invites", replyMessage)
@@ -62,7 +86,7 @@ func (m MenuMyGames) GetReplyText() string {
 }
 
 func (m MenuMyGames) CheckReply() bool {
-	if m.Message.Text == "< Back" {
+	if strings.HasPrefix(m.Message.Text, "/g_") {
 		return true
 	}
 

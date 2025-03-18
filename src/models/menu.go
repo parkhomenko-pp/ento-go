@@ -7,6 +7,8 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
+	"strconv"
+	"strings"
 )
 
 type Menu struct {
@@ -36,7 +38,18 @@ func (m *Menu) String() string {
 }
 
 func (m *Menu) InitMenu() {
-	switch m.Player.LastMenu {
+	lastMenu := ""
+	additional := ""
+
+	if strings.Contains(m.Player.LastMenu, ":") {
+		splitted := strings.Split(m.Player.LastMenu, ":")
+		lastMenu = splitted[0]
+		additional = splitted[1]
+	} else {
+		lastMenu = m.Player.LastMenu
+	}
+
+	switch lastMenu {
 	case menus.MenuNameRegistration:
 		m.Menuable = &menus.MenuRegistration{Message: m.Message, Player: m.Player, Db: m.Db}
 	case menus.MenuNameMain:
@@ -45,6 +58,10 @@ func (m *Menu) InitMenu() {
 		m.Menuable = &menus.MenuNewGame{Message: m.Message, Player: m.Player, Db: m.Db}
 	case menus.MenuNameMyGames:
 		m.Menuable = menus.NewMenuMyGames(m.Message, m.Player, m.Db)
+	case menus.MenuNameGame:
+		gameId := 0
+		gameId, _ = strconv.Atoi(additional)
+		m.Menuable = &menus.MenuGame{Message: m.Message, Player: m.Player, GameId: gameId}
 	default:
 		if m.Player.Nickname == "" {
 			m.Menuable = &menus.MenuRegistration{Message: m.Message, Player: m.Player}
