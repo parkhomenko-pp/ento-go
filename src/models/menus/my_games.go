@@ -15,7 +15,8 @@ type MenuMyGames struct {
 	Player  *entities.Player
 	Db      *gorm.DB
 
-	Games []*entities.Game
+	Games          []*entities.Game
+	UsersNicknames map[int64]string
 }
 
 func (m MenuMyGames) GetNavigation() []types.KeyboardButton {
@@ -35,7 +36,12 @@ func NewMenuMyGames(message *tgbotapi.Message, player *entities.Player, db *gorm
 		Db:      db,
 	}
 
-	menu.Db.Where("player_chat_id = ? OR opponent_chat_id = ?", menu.Player.ChatID, menu.Player.ChatID).Find(&menu.Games)
+	menu.Db.
+		Preload("Player").
+		Preload("Opponent").
+		Where("player_chat_id = ? OR opponent_chat_id = ?", menu.Player.ChatID, menu.Player.ChatID).
+		Find(&menu.Games)
+
 	return &menu
 }
 
@@ -48,9 +54,9 @@ func (m MenuMyGames) DoAction() {}
 func (m MenuMyGames) GetReplyText() string {
 	replyMessage := fmt.Sprintf("You have %d game(s)\n\n", len(m.Games))
 
-	replyMessage = concatGamesByStatus(m.Games, entities.GameStatusWaitingForAccept, "Invites", replyMessage)
-	replyMessage = concatGamesByStatus(m.Games, entities.GameStatusPlaying, "Playing", replyMessage)
-	replyMessage = concatGamesByStatus(m.Games, entities.GameStatusFinished, "Finished", replyMessage)
+	replyMessage = m.concatGamesByStatus(entities.GameStatusWaitingForAccept, "Invites", replyMessage)
+	replyMessage = m.concatGamesByStatus(entities.GameStatusPlaying, "Playing", replyMessage)
+	replyMessage = m.concatGamesByStatus(entities.GameStatusFinished, "Finished", replyMessage)
 
 	return replyMessage
 }
@@ -67,9 +73,9 @@ func (m MenuMyGames) GetOpponentMessage() *tgbotapi.MessageConfig {
 	return nil
 }
 
-func concatGamesByStatus(games []*entities.Game, status int8, label string, replyMessage string) string {
+func (m MenuMyGames) concatGamesByStatus(status int8, label string, replyMessage string) string {
 	filtered := []*entities.Game{}
-	for _, game := range games {
+	for _, game := range m.Games {
 		if game.Status == status {
 			filtered = append(filtered, game)
 		}
@@ -77,7 +83,11 @@ func concatGamesByStatus(games []*entities.Game, status int8, label string, repl
 	if len(filtered) > 0 {
 		replyMessage += label + ":\n"
 		for _, game := range filtered {
-			replyMessage += fmt.Sprintf("/g_%d - \n", game.ID) // TODO: добавить никнеймы игроков
+			replyMessage += fmt.Sprintf(
+				"/g_%d - %s\n",
+				game.ID,
+				game.GetOpponentChatIdForPlayer(m.Player).Nickname,
+			)
 		}
 		replyMessage += "\n"
 	}

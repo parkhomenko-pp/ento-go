@@ -16,3 +16,10 @@ type Game struct {
 	Dots string
 	Size uint8
 }
+
+func (g *Game) GetOpponentChatIdForPlayer(player *Player) Player {
+	if player.ChatID == g.PlayerChatID {
+		return g.Opponent
+	}
+	return g.Player
+}
