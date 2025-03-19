@@ -7,7 +7,6 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
-	"strconv"
 	"strings"
 )
 
@@ -59,9 +58,7 @@ func (m *Menu) InitMenu() {
 	case menus.MenuNameMyGames:
 		m.Menuable = menus.NewMenuMyGames(m.Message, m.Player, m.Db)
 	case menus.MenuNameGame:
-		gameId := 0
-		gameId, _ = strconv.Atoi(additional)
-		m.Menuable = &menus.MenuGame{Message: m.Message, Player: m.Player, GameId: gameId}
+		m.Menuable = menus.NemMenuGame(m.Message, m.Player, m.Db, additional)
 	default:
 		if m.Player.Nickname == "" {
 			m.Menuable = &menus.MenuRegistration{Message: m.Message, Player: m.Player}
@@ -126,7 +123,7 @@ func (m *Menu) GetOpponentMessage() *tgbotapi.MessageConfig {
 func (m *Menu) NavigateToMenu() bool {
 	navigation := m.Menuable.GetNavigation()
 	for _, button := range navigation {
-		if button.Text == m.Message.Text {
+		if button.Text == m.Message.Text && button.Destination != "" {
 			m.Player.ChangeMenu(button.Destination)
 			return true
 		}

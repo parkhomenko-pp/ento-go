@@ -12,6 +12,7 @@ type Game struct {
 	Player         Player `gorm:"foreignKey:PlayerChatID;references:ChatID"`
 	OpponentChatID int64
 	Opponent       Player `gorm:"foreignKey:OpponentChatID;references:ChatID"`
+	IsPlayerTurn   bool
 
 	Dots string
 	Size uint8
