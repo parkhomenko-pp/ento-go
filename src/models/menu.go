@@ -2,8 +2,7 @@ package models
 
 import (
 	"ento-go/src/entities"
-	"ento-go/src/models/menus"
-	"ento-go/src/models/menus/interfaces"
+	"ento-go/src/menus"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
@@ -15,7 +14,7 @@ type Menu struct {
 	Player  *entities.Player
 	Db      *gorm.DB
 
-	interfaces.Menuable
+	menus.Menuable
 
 	replyText            string
 	replyOpponentMessage *tgbotapi.MessageConfig

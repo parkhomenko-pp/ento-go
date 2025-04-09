@@ -1,4 +1,4 @@
-package interfaces
+package menus
 
 import (
 	"ento-go/src/models/types"
