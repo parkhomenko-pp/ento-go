@@ -8,7 +8,7 @@ import (
 
 func main() {
 	goban := models.NewGoban7()
-	goban.ChangeTheme(models.NewDarkGobanTheme())
+	//goban.ChangeTheme(models.NewDarkGobanTheme())
 
 	goban.PlaceBlack('A', 5)
 	goban.PlaceWhite('A', 4)

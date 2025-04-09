@@ -57,6 +57,23 @@ func newGoban(size uint8, komi float32) *Goban {
 	}
 }
 
+func NewGobanBySize(size uint8) *Goban {
+	switch size {
+	case 7:
+		return NewGoban7()
+	case 9:
+		return NewGoban9()
+	case 11:
+		return NewGoban11()
+	case 13:
+		return NewGoban13()
+	case 19:
+		return NewGoban19()
+	}
+
+	return nil
+}
+
 func NewGoban7() *Goban {
 	return newGoban(7, 4.5)
 }
