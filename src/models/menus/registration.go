@@ -90,3 +90,7 @@ func (m *MenuRegistration) GetReplyText() string {
 func (m *MenuRegistration) GetOpponentMessage() *tgbotapi.MessageConfig {
 	return nil
 }
+
+func (m *MenuRegistration) GetReplyImage() *tgbotapi.FileBytes {
+	return nil
+}

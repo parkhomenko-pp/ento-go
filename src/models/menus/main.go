@@ -46,3 +46,7 @@ func (m *MenuMain) DoAction() {
 func (m *MenuMain) GetOpponentMessage() *tgbotapi.MessageConfig {
 	return nil
 }
+
+func (m *MenuMain) GetReplyImage() *tgbotapi.FileBytes {
+	return nil
+}

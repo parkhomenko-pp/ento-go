@@ -23,13 +23,13 @@ type MenuMyGames struct {
 	ReplyText string
 }
 
-func (m MenuMyGames) GetNavigation() []types.KeyboardButton {
+func (m *MenuMyGames) GetNavigation() []types.KeyboardButton {
 	return []types.KeyboardButton{
 		{Text: "< Back", Destination: MenuNameMain},
 	}
 }
 
-func (m MenuMyGames) IsConcatReply() bool {
+func (m *MenuMyGames) IsConcatReply() bool {
 	return false
 }
 
@@ -49,11 +49,11 @@ func NewMenuMyGames(message *tgbotapi.Message, player *entities.Player, db *gorm
 	return &menu
 }
 
-func (m MenuMyGames) GetName() string {
+func (m *MenuMyGames) GetName() string {
 	return MenuNameMyGames
 }
 
-func (m MenuMyGames) DoAction() {
+func (m *MenuMyGames) DoAction() {
 	gameIDStr := strings.TrimPrefix(m.Message.Text, "/g_")
 	gameID, err := strconv.Atoi(gameIDStr)
 	if err != nil {
@@ -71,7 +71,7 @@ func (m MenuMyGames) DoAction() {
 	m.ReplyText = "Game not found"
 }
 
-func (m MenuMyGames) GetReplyText() string {
+func (m *MenuMyGames) GetReplyText() string {
 	if m.ReplyText != "" {
 		return m.ReplyText
 	}
@@ -85,7 +85,7 @@ func (m MenuMyGames) GetReplyText() string {
 	return replyMessage
 }
 
-func (m MenuMyGames) CheckReply() bool {
+func (m *MenuMyGames) CheckReply() bool {
 	if strings.HasPrefix(m.Message.Text, "/g_") {
 		return true
 	}
@@ -93,11 +93,11 @@ func (m MenuMyGames) CheckReply() bool {
 	return false
 }
 
-func (m MenuMyGames) GetOpponentMessage() *tgbotapi.MessageConfig {
+func (m *MenuMyGames) GetOpponentMessage() *tgbotapi.MessageConfig {
 	return nil
 }
 
-func (m MenuMyGames) concatGamesByStatus(status int8, label string, replyMessage string) string {
+func (m *MenuMyGames) concatGamesByStatus(status int8, label string, replyMessage string) string {
 	filtered := []*entities.Game{}
 	for _, game := range m.Games {
 		if game.Status == status {
@@ -116,4 +116,8 @@ func (m MenuMyGames) concatGamesByStatus(status int8, label string, replyMessage
 		replyMessage += "\n"
 	}
 	return replyMessage
+}
+
+func (m *MenuMyGames) GetReplyImage() *tgbotapi.FileBytes {
+	return nil
 }

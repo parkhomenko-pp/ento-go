@@ -10,6 +10,7 @@ type Menuable interface {
 	GetNavigation() []types.KeyboardButton
 	DoAction()
 	GetReplyText() string
+	GetReplyImage() *tgbotapi.FileBytes
 	GetOpponentMessage() *tgbotapi.MessageConfig
 	IsConcatReply() bool
 }

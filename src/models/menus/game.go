@@ -51,6 +51,10 @@ func (m *MenuGame) GetReplyText() string {
 	return "game #" + strconv.Itoa(int(m.Game.ID))
 }
 
+func (m *MenuGame) GetReplyImage() *tgbotapi.FileBytes {
+	return nil
+}
+
 func (m *MenuGame) IsConcatReply() bool {
 	return false
 }

@@ -92,3 +92,7 @@ func (m *MenuNewGame) CheckReply() bool {
 func (m *MenuNewGame) GetOpponentMessage() *tgbotapi.MessageConfig {
 	return m.OpponentMessage
 }
+
+func (m *MenuNewGame) GetReplyImage() *tgbotapi.FileBytes {
+	return nil
+}

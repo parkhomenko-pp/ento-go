@@ -43,3 +43,7 @@ func (m *MenuNotFound) GetReplyText() string {
 func (m *MenuNotFound) GetOpponentMessage() *tgbotapi.MessageConfig {
 	return nil
 }
+
+func (m *MenuNotFound) GetReplyImage() *tgbotapi.FileBytes {
+	return nil
+}
