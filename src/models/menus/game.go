@@ -19,11 +19,11 @@ type MenuGame struct {
 	ReplyText string
 }
 
-func (m MenuGame) GetName() string {
+func (m *MenuGame) GetName() string {
 	return MenuNameGame
 }
 
-func (m MenuGame) GetNavigation() []types.KeyboardButton {
+func (m *MenuGame) GetNavigation() []types.KeyboardButton {
 	return []types.KeyboardButton{
 		{Text: "< Back", Destination: MenuNameMyGames},
 		{Text: "Help"}, // TODO: add help message
@@ -47,22 +47,21 @@ func NemMenuGame(message *tgbotapi.Message, player *entities.Player, db *gorm.DB
 	return &menu
 }
 
-func (m MenuGame) GetReplyText() string {
+func (m *MenuGame) GetReplyText() string {
 	return "game #" + strconv.Itoa(int(m.Game.ID))
 }
 
-func (m MenuGame) IsConcatReply() bool {
+func (m *MenuGame) IsConcatReply() bool {
 	return false
 }
 
-func (m MenuGame) DoAction() {
+func (m *MenuGame) DoAction() {
 	if m.Message.Text == "Help" {
 		m.ReplyText = "Help message"
 		return
 	}
-
 }
 
-func (m MenuGame) GetOpponentMessage() *tgbotapi.MessageConfig {
+func (m *MenuGame) GetOpponentMessage() *tgbotapi.MessageConfig {
 	return nil
 }
