@@ -5,6 +5,8 @@ import (
 	"ento-go/src/models/types"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
+	"log"
+	"os"
 	"strconv"
 )
 
@@ -52,7 +54,19 @@ func (m *MenuGame) GetReplyText() string {
 }
 
 func (m *MenuGame) GetReplyImage() *tgbotapi.FileBytes {
-	return nil
+	replyImage := &tgbotapi.FileBytes{
+		Name: "output.png",
+		Bytes: func() []byte {
+			data, err := os.ReadFile("tmp/output.png")
+			if err != nil {
+				log.Println("Error reading file:", err)
+				return nil
+			}
+			return data
+		}(),
+	}
+
+	return replyImage
 }
 
 func (m *MenuGame) IsConcatReply() bool {

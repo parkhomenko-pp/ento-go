@@ -86,7 +86,7 @@ func (m *Menu) DoAction() {
 	}
 }
 
-func (m *Menu) GetReplyMessage() *tgbotapi.MessageConfig {
+func (m *Menu) GetReplyMessage() tgbotapi.Chattable {
 	message := tgbotapi.NewMessage(m.Message.Chat.ID, "")
 
 	// fill message text
@@ -112,7 +112,17 @@ func (m *Menu) GetReplyMessage() *tgbotapi.MessageConfig {
 
 	// set chat id
 	message.ChatID = m.Message.Chat.ID
-	return &message
+
+	// check for reply image
+	replyImage := m.Menuable.GetReplyImage()
+	if replyImage != nil {
+		photoMessage := tgbotapi.NewPhoto(m.Message.Chat.ID, replyImage)
+		photoMessage.Caption = message.Text
+		photoMessage.ReplyMarkup = message.ReplyMarkup
+		return &photoMessage
+	}
+
+	return message
 }
 
 func (m *Menu) GetOpponentMessage() *tgbotapi.MessageConfig {
