@@ -1,8 +1,7 @@
-package models
+package menus
 
 import (
 	"ento-go/src/entities"
-	"ento-go/src/menus"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
@@ -14,7 +13,7 @@ type Menu struct {
 	Player  *entities.Player
 	Db      *gorm.DB
 
-	menus.Menuable
+	Menuable
 
 	replyText            string
 	replyOpponentMessage *tgbotapi.MessageConfig
@@ -48,21 +47,21 @@ func (m *Menu) InitMenu() {
 	}
 
 	switch lastMenu {
-	case menus.MenuNameRegistration:
-		m.Menuable = &menus.MenuRegistration{Message: m.Message, Player: m.Player, Db: m.Db}
-	case menus.MenuNameMain:
-		m.Menuable = &menus.MenuMain{Message: m.Message, Player: m.Player}
-	case menus.MenuNameNewGame:
-		m.Menuable = &menus.MenuNewGame{Message: m.Message, Player: m.Player, Db: m.Db}
-	case menus.MenuNameMyGames:
-		m.Menuable = menus.NewMenuMyGames(m.Message, m.Player, m.Db)
-	case menus.MenuNameGame:
-		m.Menuable = menus.NemMenuGame(m.Message, m.Player, m.Db, additional)
+	case MenuNameRegistration:
+		m.Menuable = &MenuRegistration{Message: m.Message, Player: m.Player, Db: m.Db}
+	case MenuNameMain:
+		m.Menuable = &MenuMain{Message: m.Message, Player: m.Player}
+	case MenuNameNewGame:
+		m.Menuable = &MenuNewGame{Message: m.Message, Player: m.Player, Db: m.Db}
+	case MenuNameMyGames:
+		m.Menuable = NewMenuMyGames(m.Message, m.Player, m.Db)
+	case MenuNameGame:
+		m.Menuable = NemMenuGame(m.Message, m.Player, m.Db, additional)
 	default:
 		if m.Player.Nickname == "" {
-			m.Menuable = &menus.MenuRegistration{Message: m.Message, Player: m.Player}
+			m.Menuable = &MenuRegistration{Message: m.Message, Player: m.Player}
 		} else {
-			m.Menuable = &menus.MenuNotFound{Message: m.Message, Player: m.Player}
+			m.Menuable = &MenuNotFound{Message: m.Message, Player: m.Player}
 		}
 	}
 }

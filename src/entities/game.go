@@ -1,6 +1,8 @@
 package entities
 
-import "math"
+import (
+	"encoding/json"
+)
 
 const GameStatusWaitingForAccept = 0
 const GameStatusPlaying = 1
@@ -28,15 +30,10 @@ func (g *Game) GetOpponentChatIdForPlayer(player *Player) Player {
 }
 
 func (g *Game) GetDots() [][]uint8 {
-	size := int(math.Sqrt(float64(len(g.Dots))))
-	board := make([][]uint8, size)
-
-	for i := range board {
-		board[i] = make([]uint8, size)
-		for j := range board[i] {
-			board[i][j] = g.Dots[i*size+j] - '0'
-		}
+	var matrix [][]uint8
+	err := json.Unmarshal([]byte(g.Dots), &matrix)
+	if err != nil {
+		return make([][]uint8, 0)
 	}
-
-	return board
+	return matrix
 }

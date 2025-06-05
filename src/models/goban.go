@@ -95,6 +95,10 @@ func NewGoban19() *Goban {
 }
 
 func (g *Goban) SetDots(dots [][]uint8) {
+	if dots == nil {
+		return
+	}
+
 	g.dots = dots
 }
 
@@ -300,7 +304,10 @@ func (g *Goban) loadBackground() (image.Image, error) {
 }
 
 func (g *Goban) GetImage() **image.RGBA {
-	gobanImage, _ := g.loadBackground()
+	gobanImage, err := g.loadBackground()
+	if err != nil {
+		return nil
+	}
 
 	drawableImage := image.NewRGBA(gobanImage.Bounds())
 	draw.Draw(drawableImage, gobanImage.Bounds(), gobanImage, image.Point{}, draw.Src)

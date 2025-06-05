@@ -2,7 +2,7 @@ package src
 
 import (
 	"ento-go/src/entities"
-	"ento-go/src/models"
+	"ento-go/src/menus"
 	"errors"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
@@ -64,8 +64,8 @@ func (b *EntoBot) GetPlayer(chatID int64) *entities.Player {
 	return player
 }
 
-func (b *EntoBot) GetMenu(message *tgbotapi.Message, player *entities.Player) *models.Menu {
-	menu := new(models.Menu)
+func (b *EntoBot) GetMenu(message *tgbotapi.Message, player *entities.Player) *menus.Menu {
+	menu := new(menus.Menu)
 	menu.Message = message
 	menu.Player = player
 	menu.Db = b.Db
