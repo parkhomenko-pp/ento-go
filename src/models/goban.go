@@ -94,6 +94,10 @@ func NewGoban19() *Goban {
 	return newGoban(19, 6.5)
 }
 
+func (g *Goban) SetDots(dots [][]uint8) {
+	g.dots = dots
+}
+
 func (g *Goban) ChangeTheme(theme *GobanTheme) {
 	g.theme = *theme
 }

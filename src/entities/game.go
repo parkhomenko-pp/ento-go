@@ -1,5 +1,7 @@
 package entities
 
+import "math"
+
 const GameStatusWaitingForAccept = 0
 const GameStatusPlaying = 1
 const GameStatusFinished = 2
@@ -23,4 +25,18 @@ func (g *Game) GetOpponentChatIdForPlayer(player *Player) Player {
 		return g.Opponent
 	}
 	return g.Player
+}
+
+func (g *Game) GetDots() [][]uint8 {
+	size := int(math.Sqrt(float64(len(g.Dots))))
+	board := make([][]uint8, size)
+
+	for i := range board {
+		board[i] = make([]uint8, size)
+		for j := range board[i] {
+			board[i][j] = g.Dots[i*size+j] - '0'
+		}
+	}
+
+	return board
 }

@@ -2,9 +2,9 @@
 
 [![Go](https://github.com/parkhomenko-pp/go-telegram-bot/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/parkhomenko-pp/go-telegram-bot/actions/workflows/go.yml?query=branch:master)
 [![codecov](https://codecov.io/github/parkhomenko-pp/ento-go/graph/badge.svg?token=XRDZ7Q1XRC)](https://codecov.io/github/parkhomenko-pp/ento-go)
-[![Telegram Bot](./preview/tg-badge.svg)](https://t.me/ento_go_bot)
+[![Telegram Bot](.github/preview/tg-badge.svg)](https://t.me/ento_go_bot)
 
-<img src="preview/icon.png" align="right" width=150 height=150/>
+<img src=".github/preview/icon.png" align="right" width=150 height=150/>
 
 This is a Go game project that allows two players to play Go via a Telegram bot. It also includes support for playing the game from the console. Below you will find instructions on how to run the project and the current roadmap for future development.
 
