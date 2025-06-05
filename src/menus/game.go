@@ -1,14 +1,12 @@
 package menus
 
 import (
-	"bytes"
+	"ento-go/src/common"
 	"ento-go/src/entities"
 	"ento-go/src/models"
 	"ento-go/src/models/types"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
-	"image"
-	"image/png"
 	"strconv"
 )
 
@@ -61,7 +59,7 @@ func (m *MenuGame) GetReplyImage() *tgbotapi.FileBytes {
 
 	img := goban.GetImage()
 
-	byteImage, err := EncodeImageToPNGBytes(*img)
+	byteImage, err := common.EncodeImageToPNGBytes(*img)
 
 	if err != nil {
 		return nil
@@ -72,15 +70,6 @@ func (m *MenuGame) GetReplyImage() *tgbotapi.FileBytes {
 		Bytes: byteImage,
 	}
 	return fileImage
-}
-
-func EncodeImageToPNGBytes(img image.Image) ([]byte, error) {
-	var buf bytes.Buffer
-	err := png.Encode(&buf, img)
-	if err != nil {
-		return nil, err
-	}
-	return buf.Bytes(), nil
 }
 
 func (m *MenuGame) IsConcatReply() bool {
