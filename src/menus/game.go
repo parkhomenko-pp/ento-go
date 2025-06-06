@@ -81,8 +81,30 @@ func (m *MenuGame) DoAction() {
 		m.ReplyText = "Help message"
 		return
 	}
+
+	if m.isMyTurn() {
+		m.ReplyText = "You are my turn"
+	} else {
+		m.ReplyText = "It is not your turn"
+	}
 }
 
 func (m *MenuGame) GetOpponentMessage() *tgbotapi.MessageConfig {
 	return nil
+}
+
+func (m *MenuGame) isMyTurn() bool {
+	if m.Game.Player.ChatID == m.Game.PlayerChatID {
+		if m.Game.IsPlayerTurn {
+			return true
+		} else {
+			return false
+		}
+	} else {
+		if m.Game.IsPlayerTurn {
+			return false
+		} else {
+			return true
+		}
+	}
 }
