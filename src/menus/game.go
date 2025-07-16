@@ -50,7 +50,7 @@ func NemMenuGame(message *tgbotapi.Message, player *entities.Player, db *gorm.DB
 }
 
 func (m *MenuGame) GetReplyText() string {
-	return "game #" + strconv.Itoa(int(m.Game.ID))
+	return m.ReplyText
 }
 
 func (m *MenuGame) GetReplyImage() *tgbotapi.FileBytes {
@@ -69,6 +69,7 @@ func (m *MenuGame) GetReplyImage() *tgbotapi.FileBytes {
 		Name:  "goban.png",
 		Bytes: byteImage,
 	}
+
 	return fileImage
 }
 
@@ -82,11 +83,12 @@ func (m *MenuGame) DoAction() {
 		return
 	}
 
-	if m.isMyTurn() {
-		m.ReplyText = "You are my turn"
-	} else {
-		m.ReplyText = "It is not your turn"
+	if !m.isMyTurn() {
+		m.ReplyText = "Now is opponent's turn"
+		return
 	}
+
+	m.ReplyText = "TODO"
 }
 
 func (m *MenuGame) GetOpponentMessage() *tgbotapi.MessageConfig {

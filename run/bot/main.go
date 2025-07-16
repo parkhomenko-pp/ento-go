@@ -38,6 +38,7 @@ func initBot() (entoBot *src.EntoBot) {
 	}
 
 	bot.Debug = strings.ToLower(debug) == "true"
+	log.Print("\033[34m") // Set console text color to blue
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
 	if chatString := getEnvVar("TELEGRAM_ADMIN_CHAT_ID"); chatString != "" {
