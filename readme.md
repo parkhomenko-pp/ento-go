@@ -48,6 +48,9 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
   - [x] REGISTRATION: check unique username
   - [x] add "my games" menu
   - [ ] add "game" menu
+    - [x] fix empty return message in src/menus/game.go
+    - [ ] add the ability to make a move on the board
+    - [ ] add current game info
   - ...
   - [ ] Full game support
 

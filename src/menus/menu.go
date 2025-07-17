@@ -28,9 +28,10 @@ func (m *Menu) String() string {
 	}
 
 	return fmt.Sprintf(
-		"Player: %v\t Menu: %v",
+		"Player: %v, Menu: %v, Reply: %v",
 		nickname,
 		m.Menuable.GetName(),
+		m.Menuable.GetReplyText(),
 	)
 }
 
@@ -74,7 +75,7 @@ func (m *Menu) DoAction() {
 	m.replyOpponentMessage = m.Menuable.GetOpponentMessage()
 
 	// если меню изменилось, то отправить первое сообщение из следующего меню
-	if m.Player.LastMenu != m.Menuable.GetName() {
+	if !strings.Contains(m.Player.LastMenu, m.Menuable.GetName()) {
 		oldMenuConcat := m.Menuable.IsConcatReply()
 		oldMessageText := m.Menuable.GetReplyText()
 		m.InitMenu()
