@@ -67,7 +67,7 @@ func (m *Menu) InitMenu() {
 	}
 }
 
-func (m *Menu) IsMenuChanged() bool {
+func (m *Menu) isMenuChanged() bool {
 	lastPlayerMenu := m.Player.LastMenu
 	menuName := m.Menuable.GetName()
 
@@ -85,7 +85,7 @@ func (m *Menu) DoAction() {
 	m.replyOpponentMessage = m.Menuable.GetOpponentMessage()
 
 	// если меню изменилось, то отправить первое сообщение из следующего меню
-	if m.IsMenuChanged() {
+	if m.isMenuChanged() {
 		oldMenuConcat := m.Menuable.IsConcatReply()
 		oldMessageText := m.Menuable.GetReplyText()
 		m.InitMenu()
