@@ -75,7 +75,7 @@ func (m *Menu) DoAction() {
 	m.replyOpponentMessage = m.Menuable.GetOpponentMessage()
 
 	// если меню изменилось, то отправить первое сообщение из следующего меню
-	if !strings.Contains(m.Player.LastMenu, m.Menuable.GetName()) {
+	if !strings.Contains(m.Menuable.GetName(), m.Player.LastMenu) {
 		oldMenuConcat := m.Menuable.IsConcatReply()
 		oldMessageText := m.Menuable.GetReplyText()
 		m.InitMenu()
