@@ -67,6 +67,16 @@ func (m *Menu) InitMenu() {
 	}
 }
 
+func (m *Menu) IsMenuChanged() bool {
+	lastPlayerMenu := m.Player.LastMenu
+	menuName := m.Menuable.GetName()
+
+	if strings.Contains(lastPlayerMenu, ":") {
+		lastPlayerMenu = strings.Split(lastPlayerMenu, ":")[0]
+	}
+	return lastPlayerMenu != menuName
+}
+
 func (m *Menu) DoAction() {
 	if !m.NavigateToMenu() {
 		m.Menuable.DoAction()
@@ -75,7 +85,7 @@ func (m *Menu) DoAction() {
 	m.replyOpponentMessage = m.Menuable.GetOpponentMessage()
 
 	// если меню изменилось, то отправить первое сообщение из следующего меню
-	if !strings.Contains(m.Menuable.GetName(), m.Player.LastMenu) {
+	if m.IsMenuChanged() {
 		oldMenuConcat := m.Menuable.IsConcatReply()
 		oldMessageText := m.Menuable.GetReplyText()
 		m.InitMenu()
