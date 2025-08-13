@@ -559,3 +559,7 @@ func (g *Goban) getTerritoryCount(color uint8) uint16 {
 
 	return count
 }
+
+func (g *Goban) GetDots() [][]uint8 {
+	return g.dots
+}

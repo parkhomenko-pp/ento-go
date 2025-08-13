@@ -29,8 +29,8 @@ func TestIsMyTurn(t *testing.T) {
 			},
 		}
 
-		if m.isMyTurn() != test.expected {
-			t.Errorf("test %d: expected isMyTurn = %v, got %v", i, test.expected, m.isMyTurn())
+		if m.isNotMyTurn() != test.expected {
+			t.Errorf("test %d: expected isNotMyTurn = %v, got %v", i, test.expected, m.isNotMyTurn())
 		}
 	}
 }

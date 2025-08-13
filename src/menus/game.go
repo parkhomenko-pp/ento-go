@@ -8,6 +8,7 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
+	"log"
 	"strconv"
 )
 
@@ -87,33 +88,44 @@ func (m *MenuGame) DoAction() {
 		return
 	}
 
-	if !m.isMyTurn() {
+	if m.isNotMyTurn() {
 		m.ReplyText = "Now is opponent's turn"
 		return
 	}
-	m.ReplyText = "Now your turn"
 
 	runeRow, intColumn, err := m.validateMove()
 	if err != nil {
-		m.ReplyText = "Wrong move: " + err.Error()
+		m.ReplyText = "Wrong move"
 		return
 	}
 
-	err = m.goban.PlaceWhite(runeRow, intColumn)
+	if m.isPlaceBlack() {
+		err = m.goban.PlaceBlack(runeRow, intColumn)
+	} else {
+		err = m.goban.PlaceWhite(runeRow, intColumn)
+	}
+
 	if err != nil {
-		m.ReplyText = "Wrong move: " + err.Error()
+		m.ReplyText = "Wrong move"
 		return
 	}
 
-	m.ReplyText = "TODO"
+	err = m.Game.SetDots(m.goban.GetDots())
+	if err != nil {
+		m.ReplyText = "Cannot take your move"
+		return
+	}
+	m.Game.ToggleIsPlayerTurn()
+	m.Db.Save(m.Game)
+	m.ReplyText = "Successfully placed stone. Now it's opponent's turn."
 }
 
 func (m *MenuGame) GetOpponentMessage() *tgbotapi.MessageConfig {
 	return nil
 }
 
-func (m *MenuGame) isMyTurn() bool {
-	if m.Game.Player.ChatID == m.Game.PlayerChatID {
+func (m *MenuGame) isNotMyTurn() bool {
+	if m.Game.PlayerChatID == m.Message.Chat.ID {
 		if m.Game.IsPlayerTurn {
 			return true
 		} else {
@@ -141,4 +153,21 @@ func (m *MenuGame) validateMove() (rune, uint8, error) {
 	}
 
 	return runeRow, uint8(intColumn), nil
+}
+
+func (m *MenuGame) isPlaceBlack() bool {
+	log.Println(m.Game.PlayerChatID, m.Message.Chat.ID, m.Game.IsPlayerBlack)
+	if m.Game.PlayerChatID == m.Message.Chat.ID {
+		if m.Game.IsPlayerBlack {
+			return true
+		} else {
+			return false
+		}
+	} else {
+		if m.Game.IsPlayerBlack {
+			return false
+		} else {
+			return true
+		}
+	}
 }

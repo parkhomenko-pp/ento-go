@@ -16,6 +16,7 @@ type Game struct {
 	Player         Player `gorm:"foreignKey:PlayerChatID;references:ChatID"`
 	OpponentChatID int64
 	Opponent       Player `gorm:"foreignKey:OpponentChatID;references:ChatID"`
+	IsPlayerBlack  bool   `gorm:"default:true"`
 	IsPlayerTurn   bool
 
 	Dots string
@@ -36,4 +37,17 @@ func (g *Game) GetDots() [][]uint8 {
 		return make([][]uint8, 0)
 	}
 	return matrix
+}
+
+func (g *Game) SetDots(dots [][]uint8) error {
+	data, err := json.Marshal(dots)
+	if err != nil {
+		return err
+	}
+	g.Dots = string(data)
+	return nil
+}
+
+func (g *Game) ToggleIsPlayerTurn() {
+	g.IsPlayerTurn = !g.IsPlayerTurn
 }
