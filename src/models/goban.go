@@ -102,6 +102,10 @@ func (g *Goban) SetDots(dots [][]uint8) {
 	g.dots = dots
 }
 
+func (g *Goban) SetLastColor(color uint8) {
+	g.lastStoneColor = color
+}
+
 func (g *Goban) ChangeTheme(theme *GobanTheme) {
 	g.theme = *theme
 }
@@ -152,6 +156,9 @@ func (g *Goban) place(j, i uint8, color uint8) {
 }
 
 func (g *Goban) checkPoint(i, j, c uint8) error {
+	if j >= g.size || i >= g.size {
+		return errors.New("out of range")
+	}
 	if g.lastStoneColor == empty && c == white {
 		return errors.New("first move must be black")
 	}
@@ -221,7 +228,7 @@ func (g *Goban) letterToNumber(letter rune) (uint8, error) {
 	index := uint8(unicode.ToUpper(letter)) - 'A'
 
 	if index >= g.size {
-		return 0, errors.New("out of range")
+		return 0, errors.New("out of goban size")
 	}
 
 	return index, nil

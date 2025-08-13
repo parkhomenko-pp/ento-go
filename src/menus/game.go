@@ -5,6 +5,7 @@ import (
 	"ento-go/src/entities"
 	"ento-go/src/models"
 	"ento-go/src/models/types"
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
 	"strconv"
@@ -19,6 +20,8 @@ type MenuGame struct {
 
 	Game      *entities.Game
 	ReplyText string
+
+	goban *models.Goban
 }
 
 func (m *MenuGame) GetName() string {
@@ -46,6 +49,10 @@ func NemMenuGame(message *tgbotapi.Message, player *entities.Player, db *gorm.DB
 		Where("id = ?", gameId).
 		First(&menu.Game)
 
+	menu.goban = models.NewGobanBySize(menu.Game.Size)
+	menu.goban.SetDots(menu.Game.GetDots())
+	menu.goban.SetLastColor(1)
+
 	return &menu
 }
 
@@ -54,10 +61,7 @@ func (m *MenuGame) GetReplyText() string {
 }
 
 func (m *MenuGame) GetReplyImage() *tgbotapi.FileBytes {
-	goban := models.NewGobanBySize(m.Game.Size)
-	goban.SetDots(m.Game.GetDots())
-
-	img := goban.GetImage()
+	img := m.goban.GetImage()
 
 	byteImage, err := common.EncodeImageToPNGBytes(*img)
 
@@ -87,6 +91,19 @@ func (m *MenuGame) DoAction() {
 		m.ReplyText = "Now is opponent's turn"
 		return
 	}
+	m.ReplyText = "Now your turn"
+
+	runeRow, intColumn, err := m.validateMove()
+	if err != nil {
+		m.ReplyText = "Wrong move: " + err.Error()
+		return
+	}
+
+	err = m.goban.PlaceWhite(runeRow, intColumn)
+	if err != nil {
+		m.ReplyText = "Wrong move: " + err.Error()
+		return
+	}
 
 	m.ReplyText = "TODO"
 }
@@ -109,4 +126,19 @@ func (m *MenuGame) isMyTurn() bool {
 			return true
 		}
 	}
+}
+
+func (m *MenuGame) validateMove() (rune, uint8, error) {
+	messageText := m.Message.Text
+	if messageText == "" {
+		return 0, 0, fmt.Errorf("message is empty")
+	}
+
+	runeRow := []rune(messageText)[0]
+	intColumn, err := strconv.Atoi(messageText[1:])
+	if err != nil {
+		return 0, 0, fmt.Errorf("invalid column: %v", err)
+	}
+
+	return runeRow, uint8(intColumn), nil
 }
