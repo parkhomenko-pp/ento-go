@@ -118,6 +118,8 @@ func (m *MenuGame) DoAction() {
 	m.Game.LastStonePosition = m.goban.GetLast()
 	m.Db.Save(m.Game)
 	m.ReplyText = "Successfully placed stone. Now it's opponent's turn."
+
+	// TODO: send message to opponent (with image if he is in game menu)
 }
 
 func (m *MenuGame) GetOpponentMessage() *tgbotapi.MessageConfig {
