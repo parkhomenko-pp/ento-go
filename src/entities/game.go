@@ -10,14 +10,15 @@ const GameStatusFinished = 2
 const GameStatusDeclined = 4
 
 type Game struct {
-	ID             uint `gorm:"primaryKey"`
-	Status         int8
-	PlayerChatID   int64
-	Player         Player `gorm:"foreignKey:PlayerChatID;references:ChatID"`
-	OpponentChatID int64
-	Opponent       Player `gorm:"foreignKey:OpponentChatID;references:ChatID"`
-	IsPlayerBlack  bool   `gorm:"default:true"`
-	IsPlayerTurn   bool
+	ID                uint `gorm:"primaryKey"`
+	Status            int8
+	PlayerChatID      int64
+	Player            Player `gorm:"foreignKey:PlayerChatID;references:ChatID"`
+	OpponentChatID    int64
+	Opponent          Player `gorm:"foreignKey:OpponentChatID;references:ChatID"`
+	IsPlayerBlack     bool   `gorm:"default:true"`
+	IsPlayerTurn      bool
+	LastStonePosition string // JSON string of the last stone position
 
 	Dots string
 	Size uint8

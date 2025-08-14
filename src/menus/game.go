@@ -8,7 +8,6 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
-	"log"
 	"strconv"
 )
 
@@ -52,7 +51,7 @@ func NemMenuGame(message *tgbotapi.Message, player *entities.Player, db *gorm.DB
 
 	menu.goban = models.NewGobanBySize(menu.Game.Size)
 	menu.goban.SetDots(menu.Game.GetDots())
-	menu.goban.SetLastColor(1)
+	menu.goban.SetLast(menu.Game.LastStonePosition)
 
 	return &menu
 }
@@ -95,7 +94,7 @@ func (m *MenuGame) DoAction() {
 
 	runeRow, intColumn, err := m.validateMove()
 	if err != nil {
-		m.ReplyText = "Wrong move"
+		m.ReplyText = "Wrong move: " + err.Error()
 		return
 	}
 
@@ -106,7 +105,7 @@ func (m *MenuGame) DoAction() {
 	}
 
 	if err != nil {
-		m.ReplyText = "Wrong move"
+		m.ReplyText = "Wrong move: " + err.Error()
 		return
 	}
 
@@ -116,6 +115,7 @@ func (m *MenuGame) DoAction() {
 		return
 	}
 	m.Game.ToggleIsPlayerTurn()
+	m.Game.LastStonePosition = m.goban.GetLast()
 	m.Db.Save(m.Game)
 	m.ReplyText = "Successfully placed stone. Now it's opponent's turn."
 }
@@ -149,14 +149,13 @@ func (m *MenuGame) validateMove() (rune, uint8, error) {
 	runeRow := []rune(messageText)[0]
 	intColumn, err := strconv.Atoi(messageText[1:])
 	if err != nil {
-		return 0, 0, fmt.Errorf("invalid column: %v", err)
+		return 0, 0, fmt.Errorf("invalid column")
 	}
 
 	return runeRow, uint8(intColumn), nil
 }
 
 func (m *MenuGame) isPlaceBlack() bool {
-	log.Println(m.Game.PlayerChatID, m.Message.Chat.ID, m.Game.IsPlayerBlack)
 	if m.Game.PlayerChatID == m.Message.Chat.ID {
 		if m.Game.IsPlayerBlack {
 			return true

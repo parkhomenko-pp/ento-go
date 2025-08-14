@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"image"
@@ -102,8 +103,28 @@ func (g *Goban) SetDots(dots [][]uint8) {
 	g.dots = dots
 }
 
-func (g *Goban) SetLastColor(color uint8) {
-	g.lastStoneColor = color
+func (g *Goban) SetLast(positionStr string) {
+	var data struct {
+		LastI, LastJ uint8
+	}
+	if err := json.Unmarshal([]byte(positionStr), &data); err != nil {
+		g.lastI, g.lastJ, g.lastStoneColor = 0, 0, 0
+		return
+	}
+	g.lastI, g.lastJ = data.LastI, data.LastJ
+	if g.lastI < g.size && g.lastJ < g.size {
+		g.lastStoneColor = g.dots[g.lastI][g.lastJ]
+	} else {
+		g.lastStoneColor = 0
+	}
+}
+
+func (g *Goban) GetLast() string {
+	data := struct {
+		LastI, LastJ uint8
+	}{g.lastI, g.lastJ}
+	b, _ := json.Marshal(data)
+	return string(b)
 }
 
 func (g *Goban) ChangeTheme(theme *GobanTheme) {
