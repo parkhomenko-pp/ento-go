@@ -16,7 +16,7 @@ type Menu struct {
 	Menuable
 
 	replyText            string
-	replyOpponentMessage *tgbotapi.MessageConfig
+	replyOpponentMessage tgbotapi.Chattable
 }
 
 func (m *Menu) String() string {
@@ -135,7 +135,7 @@ func (m *Menu) GetReplyMessage() tgbotapi.Chattable {
 	return message
 }
 
-func (m *Menu) GetOpponentMessage() *tgbotapi.MessageConfig {
+func (m *Menu) GetOpponentMessage() tgbotapi.Chattable {
 	return m.replyOpponentMessage
 }
 

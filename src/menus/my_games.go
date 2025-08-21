@@ -93,7 +93,7 @@ func (m *MenuMyGames) CheckReply() bool {
 	return false
 }
 
-func (m *MenuMyGames) GetOpponentMessage() *tgbotapi.MessageConfig {
+func (m *MenuMyGames) GetOpponentMessage() tgbotapi.Chattable {
 	return nil
 }
 

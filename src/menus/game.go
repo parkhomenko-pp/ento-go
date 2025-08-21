@@ -18,10 +18,12 @@ type MenuGame struct {
 	Player  *entities.Player
 	Db      *gorm.DB
 
-	Game      *entities.Game
-	ReplyText string
+	Game                 *entities.Game
+	ReplyText            string
+	OpponentReplyMessage tgbotapi.Chattable
 
-	goban *models.Goban
+	goban      *models.Goban
+	replyImage *tgbotapi.FileBytes
 }
 
 func (m *MenuGame) GetName() string {
@@ -46,6 +48,8 @@ func NemMenuGame(message *tgbotapi.Message, player *entities.Player, db *gorm.DB
 	}
 
 	menu.Db.
+		Preload("Opponent").
+		Preload("Player").
 		Where("id = ?", gameId).
 		First(&menu.Game)
 
@@ -61,6 +65,10 @@ func (m *MenuGame) GetReplyText() string {
 }
 
 func (m *MenuGame) GetReplyImage() *tgbotapi.FileBytes {
+	if m.replyImage != nil {
+		return m.replyImage
+	}
+
 	img := m.goban.GetImage()
 
 	byteImage, err := common.EncodeImageToPNGBytes(*img)
@@ -73,6 +81,8 @@ func (m *MenuGame) GetReplyImage() *tgbotapi.FileBytes {
 		Name:  "goban.png",
 		Bytes: byteImage,
 	}
+
+	m.replyImage = fileImage
 
 	return fileImage
 }
@@ -119,11 +129,22 @@ func (m *MenuGame) DoAction() {
 	m.Db.Save(m.Game)
 	m.ReplyText = "Successfully placed stone. Now it's opponent's turn."
 
-	// TODO: send message to opponent (with image if he is in game menu)
+	realOpponent := m.getRealOpponent()
+
+	if realOpponent.LastMenu == MenuNameGame+":"+strconv.Itoa(int(m.Game.ID)) {
+		photoMessage := tgbotapi.NewPhoto(realOpponent.ChatID, m.GetReplyImage())
+		photoMessage.Caption = "Now your turn"
+		m.OpponentReplyMessage = photoMessage
+	} else {
+		m.OpponentReplyMessage = tgbotapi.NewMessage(
+			realOpponent.ChatID,
+			"Your opponent made a move in game "+strconv.Itoa(int(m.Game.ID)),
+		)
+	}
 }
 
-func (m *MenuGame) GetOpponentMessage() *tgbotapi.MessageConfig {
-	return nil
+func (m *MenuGame) GetOpponentMessage() tgbotapi.Chattable {
+	return m.OpponentReplyMessage
 }
 
 func (m *MenuGame) isNotMyTurn() bool {
@@ -170,5 +191,13 @@ func (m *MenuGame) isPlaceBlack() bool {
 		} else {
 			return true
 		}
+	}
+}
+
+func (m *MenuGame) getRealOpponent() *entities.Player {
+	if m.Game.PlayerChatID == m.Message.Chat.ID {
+		return &m.Game.Opponent
+	} else {
+		return &m.Game.Player
 	}
 }

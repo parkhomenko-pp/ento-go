@@ -89,7 +89,7 @@ func (m *MenuNewGame) CheckReply() bool {
 	return true
 }
 
-func (m *MenuNewGame) GetOpponentMessage() *tgbotapi.MessageConfig {
+func (m *MenuNewGame) GetOpponentMessage() tgbotapi.Chattable {
 	return m.OpponentMessage
 }
 

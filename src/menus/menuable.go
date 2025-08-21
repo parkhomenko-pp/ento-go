@@ -11,6 +11,6 @@ type Menuable interface {
 	DoAction()
 	GetReplyText() string
 	GetReplyImage() *tgbotapi.FileBytes
-	GetOpponentMessage() *tgbotapi.MessageConfig
+	GetOpponentMessage() tgbotapi.Chattable
 	IsConcatReply() bool
 }

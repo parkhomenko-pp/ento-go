@@ -43,7 +43,7 @@ func (m *MenuMain) DoAction() {
 
 }
 
-func (m *MenuMain) GetOpponentMessage() *tgbotapi.MessageConfig {
+func (m *MenuMain) GetOpponentMessage() tgbotapi.Chattable {
 	return nil
 }
 

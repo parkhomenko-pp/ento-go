@@ -87,7 +87,7 @@ func (m *MenuRegistration) GetReplyText() string {
 	return message
 }
 
-func (m *MenuRegistration) GetOpponentMessage() *tgbotapi.MessageConfig {
+func (m *MenuRegistration) GetOpponentMessage() tgbotapi.Chattable {
 	return nil
 }
 

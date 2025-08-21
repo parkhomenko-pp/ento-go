@@ -40,7 +40,7 @@ func (m *MenuNotFound) GetReplyText() string {
 	return "Menu not found"
 }
 
-func (m *MenuNotFound) GetOpponentMessage() *tgbotapi.MessageConfig {
+func (m *MenuNotFound) GetOpponentMessage() tgbotapi.Chattable {
 	return nil
 }
 
