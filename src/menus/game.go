@@ -127,13 +127,13 @@ func (m *MenuGame) DoAction() {
 	m.Game.ToggleIsPlayerTurn()
 	m.Game.LastStonePosition = m.goban.GetLast()
 	m.Db.Save(m.Game)
-	m.ReplyText = "Successfully placed stone. Now it's opponent's turn."
+	m.ReplyText = m.getPlacedDotEmoji(false) + " Successfully placed stone. Now it's opponent's turn."
 
 	realOpponent := m.getRealOpponent()
 
 	if realOpponent.LastMenu == MenuNameGame+":"+strconv.Itoa(int(m.Game.ID)) {
 		photoMessage := tgbotapi.NewPhoto(realOpponent.ChatID, m.GetReplyImage())
-		photoMessage.Caption = "Now your turn"
+		photoMessage.Caption = m.getPlacedDotEmoji(true) + " Now your turn"
 		m.OpponentReplyMessage = photoMessage
 	} else {
 		m.OpponentReplyMessage = tgbotapi.NewMessage(
@@ -200,4 +200,11 @@ func (m *MenuGame) getRealOpponent() *entities.Player {
 	} else {
 		return &m.Game.Player
 	}
+}
+
+func (m *MenuGame) getPlacedDotEmoji(inverted bool) string {
+	if m.isPlaceBlack() != inverted {
+		return "⚫"
+	}
+	return "⚪"
 }
