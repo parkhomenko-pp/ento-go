@@ -33,6 +33,8 @@ func (m *MenuGame) GetName() string {
 func (m *MenuGame) GetNavigation() []types.KeyboardButton {
 	return []types.KeyboardButton{
 		{Text: "< Back", Destination: MenuNameMyGames},
+		{Text: "Surrender"},
+		{Text: "Pass"},
 		{Text: "Help"}, // TODO: add help message
 	}
 }
@@ -101,6 +103,36 @@ func (m *MenuGame) DoAction() {
 		m.ReplyText = "Now is opponent's turn"
 		return
 	}
+
+	if m.Message.Text == "Surrender" {
+		m.Game.Status = entities.GameStatusFinished
+		m.Db.Save(&m.Game)
+		m.ReplyText = "You surrendered. Game over."
+		m.OpponentReplyMessage = tgbotapi.NewMessage(
+			m.getRealOpponent().ChatID,
+			"Your opponent surrendered. You win!",
+		)
+		return
+	}
+
+	if m.Message.Text == "Pass" {
+		m.Game.PassCount = m.Game.PassCount + 1
+		if m.Game.PassCount >= 3 {
+			m.Game.Status = entities.GameStatusFinished
+			m.ReplyText = "Game over. Both players passed 3 times."
+			m.OpponentReplyMessage = tgbotapi.NewMessage(
+				m.getRealOpponent().ChatID,
+				"Game over. Both players passed 3 times.",
+			)
+			return
+		} else {
+			m.ReplyText = "You passed your turn. Now it's opponent's turn."
+			m.Game.ToggleIsPlayerTurn()
+			m.Db.Save(&m.Game)
+			return
+		}
+	}
+	m.Game.PassCount = 0
 
 	runeRow, intColumn, err := m.validateMove()
 	if err != nil {

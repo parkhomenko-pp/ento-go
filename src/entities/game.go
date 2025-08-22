@@ -19,6 +19,7 @@ type Game struct {
 	IsPlayerBlack     bool   `gorm:"default:true"`
 	IsPlayerTurn      bool
 	LastStonePosition string // JSON string of the last stone position
+	PassCount         uint8  `gorm:"default:0"`
 
 	Dots string
 	Size uint8
