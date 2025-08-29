@@ -99,6 +99,19 @@ func (m *MenuGame) DoAction() {
 		return
 	}
 
+	if m.Game.Status == entities.GameStatusFinished {
+		if m.Message.Text == "/delete" {
+			m.Db.Delete(&m.Game)
+			m.ReplyText = "Game deleted."
+			m.Player.ChangeMenu(MenuNameMyGames)
+
+			return
+		}
+
+		m.ReplyText = "Game is already finished.\n\n/delete to delete the game."
+		return
+	}
+
 	if m.isNotMyTurn() {
 		m.ReplyText = "Now is opponent's turn"
 		return
