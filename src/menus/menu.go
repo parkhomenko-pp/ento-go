@@ -58,6 +58,10 @@ func (m *Menu) InitMenu() {
 		m.Menuable = NewMenuMyGames(m.Message, m.Player, m.Db)
 	case MenuNameGame:
 		m.Menuable = NemMenuGame(m.Message, m.Player, m.Db, additional)
+	case MenuNameSettings:
+		m.Menuable = &MenuSettings{Message: m.Message, Player: m.Player, Db: m.Db}
+	case MenuNameSettingsChangeTheme:
+		m.Menuable = &MenuSettingsChangeTheme{Message: m.Message, Player: m.Player, Db: m.Db}
 	default:
 		if m.Player.Nickname == "" {
 			m.Menuable = &MenuRegistration{Message: m.Message, Player: m.Player}

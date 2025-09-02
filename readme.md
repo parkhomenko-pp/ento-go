@@ -51,8 +51,10 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
     - [ ] add "join game" menu
   - [x] add "game" menu
     - [x] fix empty return message in src/menus/game.go
-    - [ ] add the ability to make a move on the board
+    - [x] add the ability to make a move on the board
     - [ ] add current game info
+  - [ ] add settings menu
+    - [x] add theme change aviability
   - ...
   - [ ] Full game support
 

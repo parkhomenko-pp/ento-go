@@ -18,6 +18,7 @@ func (m *MenuMain) GetNavigation() []types.KeyboardButton {
 	return []types.KeyboardButton{
 		{Text: "New game", Destination: MenuNameNewGame},
 		{Text: "My games", Destination: MenuNameMyGames},
+		{Text: "Settings", Destination: MenuNameSettings},
 	}
 }
 

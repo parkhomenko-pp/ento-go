@@ -31,6 +31,54 @@ func (p *Player) GetWinRate() float64 {
 	return float64(p.WinsCount) / float64(p.GamesCount) * 100
 }
 
+func (p *Player) GetAvailableThemes() []struct {
+	ID   uint8
+	Name string
+} {
+	themes := []struct {
+		ID   uint8
+		Name string
+	}{
+		{0, "light"},
+		{1, "dark"},
+		{2, "blue_light"},
+		{3, "blue_dark"},
+		{4, "wood_light"},
+		{5, "wood_dark"},
+	}
+	return themes
+}
+
+func (p *Player) GetAvailableThemesIds() []uint8 {
+	themes := p.GetAvailableThemes()
+	ids := make([]uint8, 0, len(themes))
+	for _, theme := range themes {
+		ids = append(ids, theme.ID)
+	}
+	return ids
+}
+
+func (p *Player) SetThemeByName(themeName string) bool {
+	themes := p.GetAvailableThemes()
+	for _, theme := range themes {
+		if theme.Name == themeName {
+			p.ThemeId = theme.ID
+			return true
+		}
+	}
+	return false
+}
+
+func (p *Player) GetThemeName() string {
+	themes := p.GetAvailableThemes()
+	for _, theme := range themes {
+		if theme.ID == p.ThemeId {
+			return theme.Name
+		}
+	}
+	return "error"
+}
+
 func (p *Player) ChangeMenu(menu string) {
 	p.LastMenu = menu
 }
