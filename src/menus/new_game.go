@@ -2,6 +2,7 @@ package menus
 
 import (
 	"ento-go/src/entities"
+	"ento-go/src/models"
 	"ento-go/src/models/types"
 	"errors"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -60,6 +61,8 @@ func (m *MenuNewGame) DoAction() {
 			OpponentChatID: opponent.ChatID,
 			Status:         entities.GameStatusWaitingForAccept,
 		}
+		game.Size = 7                              // TODO: make size selectable
+		game.SetDots(models.NewGoban7().GetDots()) // TODO: make size selectable
 		m.Db.Create(&game)
 
 		newOpponentMessage := tgbotapi.NewMessage(

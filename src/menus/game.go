@@ -8,6 +8,7 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
+	"log"
 	"strconv"
 )
 
@@ -56,6 +57,7 @@ func NemMenuGame(message *tgbotapi.Message, player *entities.Player, db *gorm.DB
 		First(&menu.Game)
 
 	menu.goban = models.NewGobanBySize(menu.Game.Size)
+	log.Println(menu.goban)
 	menu.goban.SetDots(menu.Game.GetDots())
 	menu.goban.SetLast(menu.Game.LastStonePosition)
 

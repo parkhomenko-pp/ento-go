@@ -46,6 +46,9 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
   - [x] return only string from menu (GetReplyMessage)
   - [x] fix menus sorting
   - [x] REGISTRATION: check unique username
+  - [ ] "new game menu"
+    - [x] game creation action
+    - [ ] goban size selection
   - [x] add "my games" menu
     - [ ] add "create game" menu
     - [ ] add "join game" menu
@@ -53,7 +56,7 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
     - [x] fix empty return message in src/menus/game.go
     - [x] add the ability to make a move on the board
     - [ ] add current game info
-  - [ ] add settings menu
+  - [x] add settings menu
     - [x] add theme change aviability
   - ...
   - [ ] Full game support

@@ -100,6 +100,8 @@ func (g *Goban) SetDots(dots [][]uint8) {
 		return
 	}
 
+	log.Println(dots)
+
 	g.dots = dots
 }
 
