@@ -14,88 +14,78 @@ import (
 const MenuNameGame = "game"
 
 type MenuGame struct {
-	Message *tgbotapi.Message
-	Player  *entities.Player
-	Db      *gorm.DB
-
+	Message              *tgbotapi.Message
+	Player               *entities.Player
+	Db                   *gorm.DB
 	Game                 *entities.Game
 	ReplyText            string
 	OpponentReplyMessage tgbotapi.Chattable
-
-	goban      *models.Goban
-	replyImage *tgbotapi.FileBytes
+	goban                *models.Goban
+	replyImage           *tgbotapi.FileBytes
 }
 
-func (m *MenuGame) GetName() string {
-	return MenuNameGame
-}
+func (m *MenuGame) GetName() string { return MenuNameGame }
 
 func (m *MenuGame) GetNavigation() []types.KeyboardButton {
 	return []types.KeyboardButton{
 		{Text: "< Back", Destination: MenuNameMyGames},
 		{Text: "Surrender"},
 		{Text: "Pass"},
-		{Text: "Help"}, // TODO: add help message
+		{Text: "Help"},
 	}
 }
 
 func NemMenuGame(message *tgbotapi.Message, player *entities.Player, db *gorm.DB, additional string) *MenuGame {
-	gameId := 0
-	gameId, _ = strconv.Atoi(additional)
-
-	menu := MenuGame{
-		Message: message,
-		Player:  player,
-		Db:      db,
-	}
-
-	menu.Db.
-		Preload("Opponent").
-		Preload("Player").
-		Where("id = ?", gameId).
-		First(&menu.Game)
-
+	gameId, _ := strconv.Atoi(additional)
+	menu := &MenuGame{Message: message, Player: player, Db: db}
+	db.Preload("Opponent").Preload("Player").Where("id = ?", gameId).First(&menu.Game)
 	menu.goban = models.NewGobanBySize(menu.Game.Size)
 	menu.goban.SetDots(menu.Game.GetDots())
 	menu.goban.SetLast(menu.Game.LastStonePosition)
 	menu.goban.ChangeTheme(models.CreateGobanThemeById(player.ThemeId))
-
-	return &menu
+	return menu
 }
 
-func (m *MenuGame) GetReplyText() string {
-	return m.ReplyText
-}
+func (m *MenuGame) GetReplyText() string { return m.ReplyText }
 
 func (m *MenuGame) getImageForGoban(goban models.Goban) tgbotapi.FileBytes {
 	img := goban.GetImage()
 	byteImage, _ := common.EncodeImageToPNGBytes(*img)
-
-	fileImage := tgbotapi.FileBytes{
-		Name:  "goban.png",
-		Bytes: byteImage,
-	}
-	return fileImage
+	return tgbotapi.FileBytes{Name: "goban.png", Bytes: byteImage}
 }
 
 func (m *MenuGame) GetReplyImage() *tgbotapi.FileBytes {
-	if m.replyImage != nil {
-		return m.replyImage
+	if m.replyImage == nil {
+		img := m.getImageForGoban(*m.goban)
+		m.replyImage = &img
 	}
-
-	m.replyImage = new(tgbotapi.FileBytes)
-	*m.replyImage = m.getImageForGoban(*m.goban)
-
 	return m.replyImage
 }
 
-func (m *MenuGame) IsConcatReply() bool {
-	return false
-}
+func (m *MenuGame) IsConcatReply() bool { return false }
 
 func (m *MenuGame) DoAction() {
-	if m.Message.Text == "Help" {
+	switch m.Message.Text {
+	case "Help":
 		m.ReplyText = "Help message"
+		return
+	case "Surrender":
+		m.Game.Status = entities.GameStatusFinished
+		m.Db.Save(&m.Game)
+		m.ReplyText = "You surrendered. Game over."
+		m.OpponentReplyMessage = tgbotapi.NewMessage(m.getRealOpponent().ChatID, "Your opponent surrendered. You win!")
+		return
+	case "Pass":
+		m.Game.PassCount++
+		if m.Game.PassCount >= 3 {
+			m.Game.Status = entities.GameStatusFinished
+			m.ReplyText = "Game over. Both players passed 3 times."
+			m.OpponentReplyMessage = tgbotapi.NewMessage(m.getRealOpponent().ChatID, "Game over. Both players passed 3 times.")
+		} else {
+			m.ReplyText = "You passed your turn. Now it's opponent's turn."
+			m.Game.ToggleIsPlayerTurn()
+			m.Db.Save(&m.Game)
+		}
 		return
 	}
 
@@ -104,11 +94,9 @@ func (m *MenuGame) DoAction() {
 			m.Db.Delete(&m.Game)
 			m.ReplyText = "Game deleted."
 			m.Player.ChangeMenu(MenuNameMyGames)
-
-			return
+		} else {
+			m.ReplyText = "Game is already finished.\n\n/delete to delete the game."
 		}
-
-		m.ReplyText = "Game is already finished.\n\n/delete to delete the game."
 		return
 	}
 
@@ -117,137 +105,79 @@ func (m *MenuGame) DoAction() {
 		return
 	}
 
-	if m.Message.Text == "Surrender" {
-		m.Game.Status = entities.GameStatusFinished
-		m.Db.Save(&m.Game)
-		m.ReplyText = "You surrendered. Game over."
-		m.OpponentReplyMessage = tgbotapi.NewMessage(
-			m.getRealOpponent().ChatID,
-			"Your opponent surrendered. You win!",
-		)
-		return
-	}
-
-	if m.Message.Text == "Pass" {
-		m.Game.PassCount = m.Game.PassCount + 1
-		if m.Game.PassCount >= 3 {
-			m.Game.Status = entities.GameStatusFinished
-			m.ReplyText = "Game over. Both players passed 3 times."
-			m.OpponentReplyMessage = tgbotapi.NewMessage(
-				m.getRealOpponent().ChatID,
-				"Game over. Both players passed 3 times.",
-			)
-			return
-		} else {
-			m.ReplyText = "You passed your turn. Now it's opponent's turn."
-			m.Game.ToggleIsPlayerTurn()
-			m.Db.Save(&m.Game)
-			return
-		}
-	}
 	m.Game.PassCount = 0
-
 	runeRow, intColumn, err := m.validateMove()
 	if err != nil {
 		m.ReplyText = "Wrong move: " + err.Error()
 		return
 	}
 
-	if m.isPlaceBlack() {
-		err = m.goban.PlaceBlack(runeRow, intColumn)
-	} else {
-		err = m.goban.PlaceWhite(runeRow, intColumn)
-	}
-
-	if err != nil {
+	if err = m.placeStone(runeRow, intColumn); err != nil {
 		m.ReplyText = "Wrong move: " + err.Error()
 		return
 	}
 
-	err = m.Game.SetDots(m.goban.GetDots())
-	if err != nil {
+	if err = m.Game.SetDots(m.goban.GetDots()); err != nil {
 		m.ReplyText = "Cannot take your move"
 		return
 	}
+
 	m.Game.ToggleIsPlayerTurn()
 	m.Game.LastStonePosition = m.goban.GetLast()
 	m.Db.Save(m.Game)
 	m.ReplyText = m.getPlacedDotEmoji(false) + " Successfully placed stone. Now it's opponent's turn."
 
 	realOpponent := m.getRealOpponent()
-
 	if realOpponent.LastMenu == MenuNameGame+":"+strconv.Itoa(int(m.Game.ID)) {
-		opponentGoban := m.goban.Clone() // Implement Clone() if not present
+		opponentGoban := m.goban.Clone()
 		opponentGoban.ChangeTheme(models.CreateGobanThemeById(realOpponent.ThemeId))
-
 		photoMessage := tgbotapi.NewPhoto(realOpponent.ChatID, m.getImageForGoban(opponentGoban))
 		photoMessage.Caption = m.getPlacedDotEmoji(true) + " Now your turn"
 		m.OpponentReplyMessage = photoMessage
 	} else {
-		m.OpponentReplyMessage = tgbotapi.NewMessage(
-			realOpponent.ChatID,
-			"Your opponent made a move in game "+strconv.Itoa(int(m.Game.ID)),
-		)
+		m.OpponentReplyMessage = tgbotapi.NewMessage(realOpponent.ChatID, "Your opponent made a move in game "+strconv.Itoa(int(m.Game.ID)))
 	}
 }
 
-func (m *MenuGame) GetOpponentMessage() tgbotapi.Chattable {
-	return m.OpponentReplyMessage
+func (m *MenuGame) placeStone(runeRow rune, intColumn uint8) error {
+	if m.isPlaceBlack() {
+		return m.goban.PlaceBlack(runeRow, intColumn)
+	}
+	return m.goban.PlaceWhite(runeRow, intColumn)
 }
+
+func (m *MenuGame) GetOpponentMessage() tgbotapi.Chattable { return m.OpponentReplyMessage }
 
 func (m *MenuGame) isNotMyTurn() bool {
-	if m.Game.PlayerChatID == m.Message.Chat.ID {
-		if m.Game.IsPlayerTurn {
-			return true
-		} else {
-			return false
-		}
-	} else {
-		if m.Game.IsPlayerTurn {
-			return false
-		} else {
-			return true
-		}
-	}
+	isPlayer := m.Game.PlayerChatID == m.Message.Chat.ID
+	return (isPlayer && m.Game.IsPlayerTurn) || (!isPlayer && !m.Game.IsPlayerTurn)
 }
 
 func (m *MenuGame) validateMove() (rune, uint8, error) {
-	messageText := m.Message.Text
-	if messageText == "" {
+	if m.Message.Text == "" {
 		return 0, 0, fmt.Errorf("message is empty")
 	}
-
-	runeRow := []rune(messageText)[0]
-	intColumn, err := strconv.Atoi(messageText[1:])
+	runes := []rune(m.Message.Text)
+	if len(runes) < 2 {
+		return 0, 0, fmt.Errorf("invalid move format")
+	}
+	intColumn, err := strconv.Atoi(m.Message.Text[1:])
 	if err != nil {
 		return 0, 0, fmt.Errorf("invalid column")
 	}
-
-	return runeRow, uint8(intColumn), nil
+	return runes[0], uint8(intColumn), nil
 }
 
 func (m *MenuGame) isPlaceBlack() bool {
-	if m.Game.PlayerChatID == m.Message.Chat.ID {
-		if m.Game.IsPlayerBlack {
-			return true
-		} else {
-			return false
-		}
-	} else {
-		if m.Game.IsPlayerBlack {
-			return false
-		} else {
-			return true
-		}
-	}
+	isPlayer := m.Game.PlayerChatID == m.Message.Chat.ID
+	return (isPlayer && m.Game.IsPlayerBlack) || (!isPlayer && !m.Game.IsPlayerBlack)
 }
 
 func (m *MenuGame) getRealOpponent() *entities.Player {
 	if m.Game.PlayerChatID == m.Message.Chat.ID {
 		return &m.Game.Opponent
-	} else {
-		return &m.Game.Player
 	}
+	return &m.Game.Player
 }
 
 func (m *MenuGame) getPlacedDotEmoji(inverted bool) string {
