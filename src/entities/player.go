@@ -41,10 +41,10 @@ func (p *Player) GetAvailableThemes() []struct {
 	}{
 		{0, "light"},
 		{1, "dark"},
-		{2, "blue_light"},
-		{3, "blue_dark"},
-		{4, "wood_light"},
-		{5, "wood_dark"},
+		{2, "wood_light"},
+		{3, "wood_dark"},
+		{4, "blue_light"},
+		{5, "blue_dark"},
 	}
 	return themes
 }
