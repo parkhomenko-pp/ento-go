@@ -618,3 +618,16 @@ func (g *Goban) Clone() Goban {
 		dotsTerritory:  dotsTerritoryCopy,
 	}
 }
+
+func (g *Goban) SetCaptured(blackCaptured uint16, whiteCaptured uint16) {
+	g.whiteCaptured = whiteCaptured
+	g.blackCaptured = blackCaptured
+}
+
+func (g *Goban) GetBlackCaptured() uint16 {
+	return g.blackCaptured
+}
+
+func (g *Goban) GetWhiteCaptured() uint16 {
+	return g.whiteCaptured
+}

@@ -45,11 +45,16 @@ func NemMenuGame(message *tgbotapi.Message, player *entities.Player, db *gorm.DB
 	menu.goban.SetDots(menu.Game.GetDots())
 	menu.goban.SetLast(menu.Game.LastStonePosition)
 	menu.goban.ChangeTheme(models.CreateGobanThemeById(player.ThemeId))
+	menu.goban.SetCaptured(menu.Game.PlayerCaptureDotsCount, menu.Game.OpponentCaptureDotsCount)
 	return menu
 }
 
 // Reply Helpers
-func (m *MenuGame) GetReplyText() string { return m.ReplyText }
+func (m *MenuGame) GetReplyText() string {
+	return "⚫️️Captured: " + strconv.Itoa(int(m.Game.PlayerCaptureDotsCount)) + "\n" +
+		"⚪️️Captured: " + strconv.Itoa(int(m.Game.OpponentCaptureDotsCount)) + "\n\n" +
+		m.ReplyText
+}
 
 func (m *MenuGame) GetReplyImage() *tgbotapi.FileBytes {
 	if m.replyImage == nil {
@@ -130,6 +135,8 @@ func (m *MenuGame) DoAction() {
 
 	m.Game.ToggleIsPlayerTurn()
 	m.Game.LastStonePosition = m.goban.GetLast()
+	m.Game.PlayerCaptureDotsCount = m.goban.GetWhiteCaptured()
+	m.Game.OpponentCaptureDotsCount = m.goban.GetBlackCaptured()
 	m.Db.Save(m.Game)
 	m.ReplyText = m.getPlacedDotEmoji(false) + " Successfully placed stone. Now it's opponent's turn."
 

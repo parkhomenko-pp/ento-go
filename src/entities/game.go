@@ -21,8 +21,10 @@ type Game struct {
 	LastStonePosition string // JSON string of the last stone position
 	PassCount         uint8  `gorm:"default:0"`
 
-	Dots string
-	Size uint8
+	Dots                     string
+	Size                     uint8
+	PlayerCaptureDotsCount   uint16 `gorm:"default:0"`
+	OpponentCaptureDotsCount uint16 `gorm:"default:0"`
 }
 
 func (g *Game) GetOpponentChatIdForPlayer(player *Player) Player {
