@@ -5,7 +5,6 @@ import (
 	"ento-go/src/models/types"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
-	"log"
 	"regexp"
 )
 
@@ -33,7 +32,6 @@ func (m MenuSettingsChangeTheme) GetNavigation() []types.KeyboardButton {
 func (m *MenuSettingsChangeTheme) DoAction() {
 	re := regexp.MustCompile(`/([a-zA-Z_]+)`)
 	match := re.FindStringSubmatch(m.Message.Text)
-	log.Println(match)
 	if len(match) < 2 {
 		m.replyText = "Please select a theme from the list below"
 		return

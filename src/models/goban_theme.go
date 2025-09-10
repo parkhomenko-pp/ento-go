@@ -30,6 +30,24 @@ type GobanTheme struct {
 	lastWhiteStoneStroke color.Color
 }
 
+func CreateGobanThemeById(id uint8) GobanTheme {
+	switch id {
+	case light:
+		return NewLightGobanTheme()
+	case dark:
+		return NewDarkGobanTheme()
+	case woodLight:
+		return NewWoodLightGobanTheme()
+	case woodDark:
+		return NewWoodDarkGobanTheme()
+	case tgLight:
+		return NewTgLightGobanTheme()
+	case tgDark:
+		return NewTgDarkGobanTheme()
+	}
+	return NewLightGobanTheme()
+}
+
 func (t *GobanTheme) GetFilePathName() (string, error) {
 	switch t.id {
 	case light:
@@ -49,8 +67,8 @@ func (t *GobanTheme) GetFilePathName() (string, error) {
 	}
 }
 
-func NewLightGobanTheme() *GobanTheme {
-	return &GobanTheme{
+func NewLightGobanTheme() GobanTheme {
+	return GobanTheme{
 		id: light,
 
 		blackStoneFill:   color.RGBA{R: 0x2C, G: 0x2C, B: 0x33, A: 0xFF},
@@ -65,8 +83,8 @@ func NewLightGobanTheme() *GobanTheme {
 	}
 }
 
-func NewDarkGobanTheme() *GobanTheme {
-	return &GobanTheme{
+func NewDarkGobanTheme() GobanTheme {
+	return GobanTheme{
 		id: dark,
 
 		blackStoneFill:   color.RGBA{R: 0x20, G: 0x20, B: 0x24, A: 0xFF},
@@ -81,8 +99,8 @@ func NewDarkGobanTheme() *GobanTheme {
 	}
 }
 
-func NewWoodLightGobanTheme() *GobanTheme {
-	return &GobanTheme{
+func NewWoodLightGobanTheme() GobanTheme {
+	return GobanTheme{
 		id: woodLight,
 
 		blackStoneFill:   color.RGBA{R: 0x2C, G: 0x2C, B: 0x33, A: 0xFF},
@@ -97,8 +115,8 @@ func NewWoodLightGobanTheme() *GobanTheme {
 	}
 }
 
-func NewWoodDarkGobanTheme() *GobanTheme {
-	return &GobanTheme{
+func NewWoodDarkGobanTheme() GobanTheme {
+	return GobanTheme{
 		id: woodDark,
 
 		blackStoneFill:   color.RGBA{R: 0x20, G: 0x20, B: 0x24, A: 0xFF},
@@ -113,8 +131,8 @@ func NewWoodDarkGobanTheme() *GobanTheme {
 	}
 }
 
-func NewTgLightGobanTheme() *GobanTheme {
-	return &GobanTheme{
+func NewTgLightGobanTheme() GobanTheme {
+	return GobanTheme{
 		id: tgLight,
 
 		blackStoneFill:   color.RGBA{R: 0x43, G: 0x61, B: 0x79, A: 0xFF},
@@ -129,8 +147,8 @@ func NewTgLightGobanTheme() *GobanTheme {
 	}
 }
 
-func NewTgDarkGobanTheme() *GobanTheme {
-	return &GobanTheme{
+func NewTgDarkGobanTheme() GobanTheme {
+	return GobanTheme{
 		id: tgDark,
 
 		blackStoneFill:   color.RGBA{R: 0x0B, G: 0x14, B: 0x1F, A: 0xFF},

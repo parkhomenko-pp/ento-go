@@ -8,7 +8,6 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
-	"log"
 	"strconv"
 )
 
@@ -57,9 +56,9 @@ func NemMenuGame(message *tgbotapi.Message, player *entities.Player, db *gorm.DB
 		First(&menu.Game)
 
 	menu.goban = models.NewGobanBySize(menu.Game.Size)
-	log.Println(menu.goban)
 	menu.goban.SetDots(menu.Game.GetDots())
 	menu.goban.SetLast(menu.Game.LastStonePosition)
+	menu.goban.ChangeTheme(models.CreateGobanThemeById(player.ThemeId))
 
 	return &menu
 }
@@ -68,27 +67,26 @@ func (m *MenuGame) GetReplyText() string {
 	return m.ReplyText
 }
 
+func (m *MenuGame) getImageForGoban(goban models.Goban) tgbotapi.FileBytes {
+	img := goban.GetImage()
+	byteImage, _ := common.EncodeImageToPNGBytes(*img)
+
+	fileImage := tgbotapi.FileBytes{
+		Name:  "goban.png",
+		Bytes: byteImage,
+	}
+	return fileImage
+}
+
 func (m *MenuGame) GetReplyImage() *tgbotapi.FileBytes {
 	if m.replyImage != nil {
 		return m.replyImage
 	}
 
-	img := m.goban.GetImage()
+	m.replyImage = new(tgbotapi.FileBytes)
+	*m.replyImage = m.getImageForGoban(*m.goban)
 
-	byteImage, err := common.EncodeImageToPNGBytes(*img)
-
-	if err != nil {
-		return nil
-	}
-
-	fileImage := &tgbotapi.FileBytes{
-		Name:  "goban.png",
-		Bytes: byteImage,
-	}
-
-	m.replyImage = fileImage
-
-	return fileImage
+	return m.replyImage
 }
 
 func (m *MenuGame) IsConcatReply() bool {
@@ -179,7 +177,10 @@ func (m *MenuGame) DoAction() {
 	realOpponent := m.getRealOpponent()
 
 	if realOpponent.LastMenu == MenuNameGame+":"+strconv.Itoa(int(m.Game.ID)) {
-		photoMessage := tgbotapi.NewPhoto(realOpponent.ChatID, m.GetReplyImage())
+		opponentGoban := m.goban.Clone() // Implement Clone() if not present
+		opponentGoban.ChangeTheme(models.CreateGobanThemeById(realOpponent.ThemeId))
+
+		photoMessage := tgbotapi.NewPhoto(realOpponent.ChatID, m.getImageForGoban(opponentGoban))
 		photoMessage.Caption = m.getPlacedDotEmoji(true) + " Now your turn"
 		m.OpponentReplyMessage = photoMessage
 	} else {

@@ -52,7 +52,7 @@ func newGoban(size uint8, komi float32) *Goban {
 	return &Goban{
 		size:           size,
 		dots:           dots,
-		theme:          *NewLightGobanTheme(),
+		theme:          NewLightGobanTheme(),
 		lastStoneColor: 0,
 		komi:           komi,
 	}
@@ -100,8 +100,6 @@ func (g *Goban) SetDots(dots [][]uint8) {
 		return
 	}
 
-	log.Println(dots)
-
 	g.dots = dots
 }
 
@@ -129,8 +127,8 @@ func (g *Goban) GetLast() string {
 	return string(b)
 }
 
-func (g *Goban) ChangeTheme(theme *GobanTheme) {
-	g.theme = *theme
+func (g *Goban) ChangeTheme(theme GobanTheme) {
+	g.theme = theme
 }
 
 func (g *Goban) Print() {
@@ -585,4 +583,38 @@ func (g *Goban) getTerritoryCount(color uint8) uint16 {
 
 func (g *Goban) GetDots() [][]uint8 {
 	return g.dots
+}
+
+func (g *Goban) GetTheme() GobanTheme {
+	return g.theme
+}
+
+func (g *Goban) Clone() Goban {
+	// Deep copy dots
+	dotsCopy := make([][]uint8, g.size)
+	for i := range g.dots {
+		dotsCopy[i] = make([]uint8, g.size)
+		copy(dotsCopy[i], g.dots[i])
+	}
+
+	// Deep copy dotsTerritory
+	dotsTerritoryCopy := make([][]uint8, g.size)
+	for i := range g.dotsTerritory {
+		dotsTerritoryCopy[i] = make([]uint8, g.size)
+		copy(dotsTerritoryCopy[i], g.dotsTerritory[i])
+	}
+
+	return Goban{
+		theme:          g.theme,
+		size:           g.size,
+		komi:           g.komi,
+		count:          g.count,
+		dots:           dotsCopy,
+		lastStoneColor: g.lastStoneColor,
+		lastI:          g.lastI,
+		lastJ:          g.lastJ,
+		whiteCaptured:  g.whiteCaptured,
+		blackCaptured:  g.blackCaptured,
+		dotsTerritory:  dotsTerritoryCopy,
+	}
 }
