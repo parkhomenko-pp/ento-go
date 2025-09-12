@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 )
 
-const GameStatusWaitingForAccept = 0
+const GameStatusInvited = 0
 const GameStatusPlaying = 1
 const GameStatusFinished = 2
 const GameStatusDeclined = 4

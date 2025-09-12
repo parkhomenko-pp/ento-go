@@ -63,7 +63,12 @@ func (m *MenuMyGames) DoAction() {
 
 	for _, game := range m.Games {
 		if game.ID == uint(gameID) {
-			m.Player.ChangeMenuWithAdditional(MenuNameGame, strconv.Itoa(gameID))
+			switch game.Status {
+			case entities.GameStatusInvited:
+				m.Player.ChangeMenuWithAdditional(MenuNameInvited, strconv.Itoa(gameID))
+			default:
+				m.Player.ChangeMenuWithAdditional(MenuNameGame, strconv.Itoa(gameID))
+			}
 			return
 		}
 	}
@@ -78,7 +83,7 @@ func (m *MenuMyGames) GetReplyText() string {
 
 	replyMessage := fmt.Sprintf("You have %d game(s)\n\n", len(m.Games))
 
-	replyMessage = m.concatGamesByStatus(entities.GameStatusWaitingForAccept, "Invites", replyMessage)
+	replyMessage = m.concatGamesByStatus(entities.GameStatusInvited, "Invites", replyMessage)
 	replyMessage = m.concatGamesByStatus(entities.GameStatusPlaying, "Playing", replyMessage)
 	replyMessage = m.concatGamesByStatus(entities.GameStatusFinished, "Finished", replyMessage)
 

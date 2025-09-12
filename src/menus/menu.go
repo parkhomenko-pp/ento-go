@@ -56,6 +56,8 @@ func (m *Menu) InitMenu() {
 		m.Menuable = &MenuNewGame{Message: m.Message, Player: m.Player, Db: m.Db}
 	case MenuNameMyGames:
 		m.Menuable = NewMenuMyGames(m.Message, m.Player, m.Db)
+	case MenuNameInvited:
+		m.Menuable = NewMenuInvited(m.Message, m.Player, m.Db, additional)
 	case MenuNameGame:
 		m.Menuable = NemMenuGame(m.Message, m.Player, m.Db, additional)
 	case MenuNameSettings:

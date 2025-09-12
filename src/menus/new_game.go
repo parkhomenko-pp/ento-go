@@ -59,7 +59,7 @@ func (m *MenuNewGame) DoAction() {
 		game = &entities.Game{
 			PlayerChatID:   m.Player.ChatID,
 			OpponentChatID: opponent.ChatID,
-			Status:         entities.GameStatusWaitingForAccept,
+			Status:         entities.GameStatusInvited,
 		}
 		game.Size = 7                              // TODO: make size selectable
 		game.SetDots(models.NewGoban7().GetDots()) // TODO: make size selectable
