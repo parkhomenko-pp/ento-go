@@ -50,8 +50,10 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
     - [x] game creation action
     - [ ] goban size selection
   - [x] add "my games" menu
-    - [ ] add "create game" menu
-    - [ ] add "join game" menu
+    - [x] add "join game" menu
+    - [x] add "invited" menu
+    - [x] add "declined" menu
+    - [ ] add "finished" menu
   - [x] add "game" menu
     - [x] fix empty return message in src/menus/game.go
     - [x] add the ability to make a move on the board
