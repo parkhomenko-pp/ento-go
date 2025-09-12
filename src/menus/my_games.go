@@ -17,8 +17,7 @@ type MenuMyGames struct {
 	Player  *entities.Player
 	Db      *gorm.DB
 
-	Games          []*entities.Game
-	UsersNicknames map[int64]string
+	Games []*entities.Game
 
 	ReplyText string
 }
@@ -26,6 +25,7 @@ type MenuMyGames struct {
 func (m *MenuMyGames) GetNavigation() []types.KeyboardButton {
 	return []types.KeyboardButton{
 		{Text: "< Back", Destination: MenuNameMain},
+		{Text: "Declined", Destination: MenuNameDeclined},
 	}
 }
 
@@ -81,7 +81,14 @@ func (m *MenuMyGames) GetReplyText() string {
 		return m.ReplyText
 	}
 
-	replyMessage := fmt.Sprintf("You have %d game(s)\n\n", len(m.Games))
+	countGamesWithoutDeclined := 0
+	for _, game := range m.Games {
+		if game.Status != entities.GameStatusDeclined {
+			countGamesWithoutDeclined++
+		}
+	}
+
+	replyMessage := fmt.Sprintf("You have %d game(s)\n\n", countGamesWithoutDeclined)
 
 	replyMessage = m.concatGamesByStatus(entities.GameStatusInvited, "Invites", replyMessage)
 	replyMessage = m.concatGamesByStatus(entities.GameStatusPlaying, "Playing", replyMessage)
