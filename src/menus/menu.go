@@ -62,6 +62,8 @@ func (m *Menu) InitMenu() {
 		m.Menuable = NewMenuDeclined(m.Message, m.Player, m.Db)
 	case MenuNameGame:
 		m.Menuable = NemMenuGame(m.Message, m.Player, m.Db, additional)
+	case MenuNameGameFinished:
+		m.Menuable = NemMenuGameFinished(m.Message, m.Player, m.Db, additional)
 	case MenuNameSettings:
 		m.Menuable = &MenuSettings{Message: m.Message, Player: m.Player, Db: m.Db}
 	case MenuNameSettingsChangeTheme:

@@ -66,6 +66,8 @@ func (m *MenuMyGames) DoAction() {
 			switch game.Status {
 			case entities.GameStatusInvited:
 				m.Player.ChangeMenuWithAdditional(MenuNameInvited, strconv.Itoa(gameID))
+			case entities.GameStatusFinished:
+				m.Player.ChangeMenuWithAdditional(MenuNameGameFinished, strconv.Itoa(gameID))
 			default:
 				m.Player.ChangeMenuWithAdditional(MenuNameGame, strconv.Itoa(gameID))
 			}
