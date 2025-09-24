@@ -12,8 +12,7 @@ type MenuNotFound struct {
 }
 
 func (m *MenuNotFound) GetNavigation() []types.KeyboardButton {
-	//TODO implement me
-	panic("implement me")
+	return nil
 }
 
 func (m *MenuNotFound) IsConcatReply() bool {
