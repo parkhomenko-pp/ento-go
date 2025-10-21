@@ -12,6 +12,12 @@ This is a Go game project that allows two players to play Go via a Telegram bot.
 
 ## Run project
 
+1. Create .env file from .env.example and set required environment variables:
+   - `TELEGRAM_BOT_TOKEN` - your telegram bot token from [BotFather](https://t.me/BotFather)
+   - `TELEGRAM_ADMIN_CHAT_ID` - your telegram chat ID (you can get it by sending a message to your bot and checking updates via `https://api.telegram.org/bot
+   - `DEBUG` - set to `true` to enable debug mode or `false` to disable it
+
+2. Run the bot:
 ```sh
 go run run/bot/main.go      # start telegram bot
 ```
