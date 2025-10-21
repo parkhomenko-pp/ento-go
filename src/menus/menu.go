@@ -52,8 +52,10 @@ func (m *Menu) InitMenu() {
 		m.Menuable = &MenuRegistration{Message: m.Message, Player: m.Player, Db: m.Db}
 	case MenuNameMain:
 		m.Menuable = &MenuMain{Message: m.Message, Player: m.Player}
+	case MenuNameNewGameSize:
+		m.Menuable = NewMenuNewGameSize(m.Message, m.Player, m.Db)
 	case MenuNameNewGame:
-		m.Menuable = &MenuNewGame{Message: m.Message, Player: m.Player, Db: m.Db}
+		m.Menuable = NewMenuNewGame(m.Message, m.Player, m.Db, additional)
 	case MenuNameMyGames:
 		m.Menuable = NewMenuMyGames(m.Message, m.Player, m.Db)
 	case MenuNameInvited:

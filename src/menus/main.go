@@ -16,7 +16,7 @@ type MenuMain struct {
 
 func (m *MenuMain) GetNavigation() []types.KeyboardButton {
 	return []types.KeyboardButton{
-		{Text: "New game", Destination: MenuNameNewGame},
+		{Text: "New game", Destination: MenuNameNewGameSize},
 		{Text: "My games", Destination: MenuNameMyGames},
 		{Text: "Settings", Destination: MenuNameSettings},
 	}

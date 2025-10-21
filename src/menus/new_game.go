@@ -7,14 +7,16 @@ import (
 	"errors"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"gorm.io/gorm"
+	"strconv"
 )
 
 const MenuNameNewGame = "new_game"
 
 type MenuNewGame struct {
-	Message *tgbotapi.Message
-	Player  *entities.Player
-	Db      *gorm.DB
+	Message   *tgbotapi.Message
+	Player    *entities.Player
+	Db        *gorm.DB
+	GobanSize int
 
 	ReplyText       string
 	OpponentMessage *tgbotapi.MessageConfig
@@ -22,9 +24,20 @@ type MenuNewGame struct {
 	concat bool
 }
 
+func NewMenuNewGame(message *tgbotapi.Message, player *entities.Player, db *gorm.DB, additional string) *MenuNewGame {
+	gobanSize, _ := strconv.Atoi(additional)
+
+	return &MenuNewGame{
+		Message:   message,
+		Player:    player,
+		Db:        db,
+		GobanSize: gobanSize,
+	}
+}
+
 func (m *MenuNewGame) GetNavigation() []types.KeyboardButton {
 	return []types.KeyboardButton{
-		{Text: "< Back", Destination: MenuNameMain},
+		{Text: "< Back", Destination: MenuNameNewGameSize},
 	}
 }
 
@@ -61,8 +74,8 @@ func (m *MenuNewGame) DoAction() {
 			OpponentChatID: opponent.ChatID,
 			Status:         entities.GameStatusInvited,
 		}
-		game.Size = 7                              // TODO: make size selectable
-		game.SetDots(models.NewGoban7().GetDots()) // TODO: make size selectable
+		game.Size = uint8(m.GobanSize)
+		game.SetDots(models.NewGobanBySize(game.Size).GetDots())
 		m.Db.Create(&game)
 
 		newOpponentMessage := tgbotapi.NewMessage(

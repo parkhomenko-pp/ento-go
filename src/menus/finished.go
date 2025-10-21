@@ -60,7 +60,7 @@ func (m *MenuGameFinished) DoAction() {
 
 	m.Game.PlayerCaptureDotsCount = 0
 	m.Game.OpponentCaptureDotsCount = 0
-	m.Game.SetDots(models.NewGoban7().GetDots())
+	m.Game.SetDots(models.NewGobanBySize(m.Game.Size).GetDots())
 	m.Game.LastStonePosition = ""
 	m.Db.Save(&m.Game)
 

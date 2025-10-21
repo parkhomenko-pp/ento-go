@@ -16,10 +16,6 @@ This is a Go game project that allows two players to play Go via a Telegram bot.
 go run run/bot/main.go      # start telegram bot
 ```
 
-```sh
-go run run/console/main.go  # start console game
-```
-
 ## Run tests
 ```sh
 go test -v -coverprofile=coverage.out ./...         # with coverage
@@ -33,14 +29,9 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
   - [x] Place stones on board
   - [x] Stones without dame (liberties) determine
   - [x] Stones without dame remove from goban
+  - [x] Captured stones count
   - [ ] Captured areas count
-  - [ ] Captured stones count
-- Refactor
-  - [ ] Move Printer from goban
-  - [ ] Move Image generator from goban
-- Console
-  - [ ] ✏️TODO
-  - [ ] Full game support
+  - [ ] Final score count
 - Bot
   - ...
   - [x] return only string from menu (GetReplyMessage)
@@ -48,7 +39,7 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
   - [x] REGISTRATION: check unique username
   - [ ] "new game menu"
     - [x] game creation action
-    - [ ] goban size selection
+    - [x] goban size selection
   - [x] add "my games" menu
     - [x] add "join game" menu
     - [x] add "invited" menu

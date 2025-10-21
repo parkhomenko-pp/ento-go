@@ -64,8 +64,6 @@ func NewGobanBySize(size uint8) *Goban {
 		return NewGoban7()
 	case 9:
 		return NewGoban9()
-	case 11:
-		return NewGoban11()
 	case 13:
 		return NewGoban13()
 	case 19:
@@ -81,10 +79,6 @@ func NewGoban7() *Goban {
 
 func NewGoban9() *Goban {
 	return newGoban(9, 5.5)
-}
-
-func NewGoban11() *Goban {
-	return newGoban(11, 5.5)
 }
 
 func NewGoban13() *Goban {

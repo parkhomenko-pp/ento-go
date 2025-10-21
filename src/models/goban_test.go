@@ -241,21 +241,6 @@ func TestNewGoban9(t *testing.T) {
 	}
 }
 
-func TestNewGoban11(t *testing.T) {
-	goban := NewGoban11()
-	if goban.size != 11 {
-		t.Errorf("expected size 11, got %d", goban.size)
-	}
-	if len(goban.dots) != 11 {
-		t.Errorf("expected 11 rows, got %d", len(goban.dots))
-	}
-	for _, row := range goban.dots {
-		if len(row) != 11 {
-			t.Errorf("expected 11 columns, got %d", len(row))
-		}
-	}
-}
-
 func TestNewGoban13(t *testing.T) {
 	goban := NewGoban13()
 	if goban.size != 13 {

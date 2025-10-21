@@ -24,8 +24,9 @@ type MenuGame struct {
 	replyImage           *tgbotapi.FileBytes
 }
 
-// Interface/Basic Info
-func (m *MenuGame) GetName() string { return MenuNameGame }
+func (m *MenuGame) GetName() string {
+	return MenuNameGame
+}
 
 func (m *MenuGame) GetNavigation() []types.KeyboardButton {
 	return []types.KeyboardButton{
@@ -36,7 +37,6 @@ func (m *MenuGame) GetNavigation() []types.KeyboardButton {
 	}
 }
 
-// Factory/Constructor
 func NemMenuGame(message *tgbotapi.Message, player *entities.Player, db *gorm.DB, additional string) *MenuGame {
 	gameId, _ := strconv.Atoi(additional)
 	menu := &MenuGame{Message: message, Player: player, Db: db}
@@ -49,7 +49,6 @@ func NemMenuGame(message *tgbotapi.Message, player *entities.Player, db *gorm.DB
 	return menu
 }
 
-// Reply Helpers
 func (m *MenuGame) GetReplyText() string {
 	return "⚫️️Captured: " + strconv.Itoa(int(m.Game.PlayerCaptureDotsCount)) + "\n" +
 		"⚪️️Captured: " + strconv.Itoa(int(m.Game.OpponentCaptureDotsCount)) + "\n\n" +
@@ -70,11 +69,14 @@ func (m *MenuGame) getImageForGoban(goban models.Goban) tgbotapi.FileBytes {
 	return tgbotapi.FileBytes{Name: "goban.png", Bytes: byteImage}
 }
 
-func (m *MenuGame) IsConcatReply() bool { return false }
+func (m *MenuGame) IsConcatReply() bool {
+	return false
+}
 
-func (m *MenuGame) GetOpponentMessage() tgbotapi.Chattable { return m.OpponentReplyMessage }
+func (m *MenuGame) GetOpponentMessage() tgbotapi.Chattable {
+	return m.OpponentReplyMessage
+}
 
-// Game Logic
 func (m *MenuGame) DoAction() {
 	switch m.Message.Text {
 	case "Help":
@@ -174,7 +176,6 @@ func (m *MenuGame) validateMove() (rune, uint8, error) {
 	return runes[0], uint8(intColumn), nil
 }
 
-// Turn/Player Helpers
 func (m *MenuGame) isNotMyTurn() bool {
 	isPlayer := m.Game.PlayerChatID == m.Message.Chat.ID
 	return (isPlayer && m.Game.IsPlayerTurn) || (!isPlayer && !m.Game.IsPlayerTurn)
