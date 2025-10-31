@@ -19,8 +19,11 @@ This is a Go game project that allows two players to play Go via a Telegram bot.
 
 2. Run the bot:
 ```sh
-go run run/bot/main.go      # start telegram bot
+go run run/main.go      # start telegram bot
 ```
+
+## Docs
+How to play with the bot: [USER GUIDE](.github/docs/user_guide.md)
 
 ## Run tests
 ```sh
@@ -57,7 +60,6 @@ go tool cover -html=coverage.out -o coverage.html   # generate coverage report
     - [ ] add current game info
   - [x] add settings menu
     - [x] add theme change aviability
-  - ...
   - [ ] Full game support
 
 ## Credits
